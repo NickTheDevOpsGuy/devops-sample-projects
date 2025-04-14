@@ -1,7 +1,15 @@
 const http = require('http');
 
-const server = http.createServer((req, res) => {
+const handler = (req, res) => {
   res.end("Hello from DevOps Domination Server!");
-});
+};
 
-server.listen(3000, () => console.log("🚀 Server running on http://localhost:3000"));
+const server = http.createServer(handler);
+
+if (require.main === module) {
+  server.listen(3000, () => {
+    console.log("🚀 Server running on http://localhost:3000");
+  });
+}
+
+module.exports = server;
