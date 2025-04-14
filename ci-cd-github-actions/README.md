@@ -12,7 +12,7 @@ ci-cd-github-actions/
 ├── Dockerfile               # Docker image definition
 ├── package.json             # Node.js project metadata
 ├── tests/
-│   └── sum.test.js          # Example Jest test
+│   └── app.test.js          # Example Jest test
 └── .github/
     └── workflows/
         └── ci.yml           # GitHub Actions workflow file
