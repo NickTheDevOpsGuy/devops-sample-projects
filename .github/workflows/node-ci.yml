@@ -1,8 +1,8 @@
 name: CI Pipeline
 
-# 🔐 REQUIRED SECRETS (Set these in GitHub repo → Settings → Secrets → Actions):
-# - CR_USERNAME: your GitHub username (e.g., NickTheDevOpsGuy)
-# - CR_PAT: GitHub Personal Access Token with 'write:packages' & 'read:packages'
+# 🔐 REQUIRED SECRETS (set these in GitHub repo → Settings → Secrets → Actions):
+# - CR_USERNAME: Your GitHub username (e.g., NickTheDevOpsGuy)
+# - CR_PAT: A Personal Access Token with write:packages + read:packages scope
 
 on:
   push:
