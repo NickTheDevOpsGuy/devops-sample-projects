@@ -8,6 +8,7 @@
     "start": "node app.js",
     "lint": "eslint ."
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
