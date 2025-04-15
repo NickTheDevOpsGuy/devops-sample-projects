@@ -98,12 +98,3 @@ Hello from DevOps Domination Server!
 ## 👑 Built for DevOps Domination
 This project is part of the NickDoesDevOps portfolio.
 Follow along the journey at github.com/NickTheDevOpsGuy
-
-```yaml
-Want me to:
-- Include GHCR push in `ci.yml`?
-- Add badges (e.g. CI status, coverage)?
-- Auto-generate GitHub Pages for documentation?
-
-Your DevOps empire awaits 🧱🌍
-```
