@@ -53,12 +53,12 @@ jobs:
 
     - name: 🏗️ Build Docker image
       run: |
-        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app
+        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME,, }}/node-ci-app
         IMAGE_TAG=latest
         docker build -t $IMAGE_ID:$IMAGE_TAG .
 
     - name: 🚀 Push Docker image
       run: |
-        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app
+        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME,, }}/node-ci-app
         IMAGE_TAG=latest
         docker push $IMAGE_ID:$IMAGE_TAG
