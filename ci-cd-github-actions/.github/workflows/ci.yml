@@ -26,3 +26,12 @@ jobs:
 
     - name: Run tests
       run: npm test
+  
+    - name: Log in to GHCR
+      run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u "${{ secrets.CR_USERNAME }}" --password-stdin
+
+    - name: Build Docker image
+      run: docker build -t ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app:latest .
+
+    - name: Push Docker image to GHCR
+      run: docker push ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app:latest
