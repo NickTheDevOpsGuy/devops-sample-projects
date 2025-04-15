@@ -1,5 +1,9 @@
 name: CI Pipeline
 
+# 🔐 REQUIRED SECRETS (Set these in GitHub repo → Settings → Secrets → Actions):
+# - CR_USERNAME: your GitHub username (e.g., NickTheDevOpsGuy)
+# - CR_PAT: GitHub Personal Access Token with 'write:packages' & 'read:packages'
+
 on:
   push:
     paths:
@@ -36,7 +40,7 @@ jobs:
       run: npm test
 
     - name: 📊 Generate coverage report
-      run: npx jest --coverage --ci
+      run: npm run coverage
 
     - name: 💾 Upload coverage artifact
       uses: actions/upload-artifact@v4
