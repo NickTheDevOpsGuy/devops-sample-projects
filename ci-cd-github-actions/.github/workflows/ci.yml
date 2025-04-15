@@ -2,36 +2,52 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v3
 
-    - name: Set up Node.js
+    - name: ⚙️ Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '18'
 
-    - name: Install dependencies
+    - name: 📦 Install dependencies
       run: npm install
 
-    - name: Run ESLint
+    - name: 🧹 Run ESLint
       run: npx eslint .
 
-    - name: Run tests
+    - name: 🧪 Run Jest tests
       run: npm test
-  
-    - name: Log in to GHCR
+
+    - name: 📊 Generate coverage report
+      run: npx jest --coverage --ci
+
+    - name: 💾 Upload coverage artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: coverage/
+
+    - name: 🐳 Log in to GitHub Container Registry
       run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u "${{ secrets.CR_USERNAME }}" --password-stdin
 
-    - name: Build Docker image
-      run: docker build -t ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app:latest .
+    - name: 🏗️ Build Docker image
+      run: |
+        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app
+        IMAGE_TAG=latest
+        docker build -t $IMAGE_ID:$IMAGE_TAG .
 
-    - name: Push Docker image to GHCR
-      run: docker push ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app:latest
+    - name: 🚀 Push Docker image
+      run: |
+        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME }}/node-ci-app
+        IMAGE_TAG=latest
+        docker push $IMAGE_ID:$IMAGE_TAG
