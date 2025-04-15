@@ -8,15 +8,15 @@ This project demonstrates a **Node.js application** with a **CI/CD pipeline** us
 ## 🧱 Project Structure
 
 ```bash
+.github/
+├── workflows/
+│   └── node-ci.yml           # GitHub Actions workflow file
 ci-cd-github-actions/
 ├── app.js                    # Simple Node.js HTTP server
 ├── Dockerfile               # Docker image definition
 ├── package.json             # Node.js project metadata
 ├── tests/
 │   └── app.test.js          # Example Jest test
-└── .github/
-    └── workflows/
-        └── ci.yml           # GitHub Actions workflow file
 ```
 ---
 
