@@ -10,7 +10,6 @@ A curated collection of hands-on DevOps labs and real-world workflows I’ve bui
 | [`aks-monitoring-lab`](./aks-monitoring-lab) | Monitoring AKS with Azure Monitor + App Insights | AKS, Azure Monitor |
 | [`gitops-argocd-lab`](./gitops-argocd-lab) | GitOps workflow with ArgoCD | Kubernetes, ArgoCD |
 | [`terraform-azure-infra`](./terraform-azure-infra) | IaC using Terraform for Azure | Terraform, Azure |
-| [`helm-smart-feeder`](./helm-smart-feeder) | Helm chart for IoT-based bird feeder app | Helm, AKS |
 
 ---
 
