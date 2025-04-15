@@ -33,7 +33,7 @@ jobs:
       run: npm install
 
     - name: 🧹 Run ESLint
-      run: . --config eslint.config.cjs
+      run: npm run lint
 
     - name: 🧪 Run Jest tests
       run: npm test
