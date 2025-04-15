@@ -1,9 +1,5 @@
 name: CI Pipeline
 
-# 🔐 REQUIRED SECRETS (set these in GitHub repo → Settings → Secrets → Actions):
-# - CR_USERNAME: Your GitHub username (e.g., NickTheDevOpsGuy)
-# - CR_PAT: A Personal Access Token with write:packages + read:packages scope
-
 on:
   push:
     paths:
@@ -53,12 +49,14 @@ jobs:
 
     - name: 🏗️ Build Docker image
       run: |
-        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME,, }}/node-ci-app
+        USERNAME_LOWER=$(echo "${{ secrets.CR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
+        IMAGE_ID=ghcr.io/$USERNAME_LOWER/node-ci-app
         IMAGE_TAG=latest
         docker build -t $IMAGE_ID:$IMAGE_TAG .
 
     - name: 🚀 Push Docker image
       run: |
-        IMAGE_ID=ghcr.io/${{ secrets.CR_USERNAME,, }}/node-ci-app
+        USERNAME_LOWER=$(echo "${{ secrets.CR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
+        IMAGE_ID=ghcr.io/$USERNAME_LOWER/node-ci-app
         IMAGE_TAG=latest
         docker push $IMAGE_ID:$IMAGE_TAG
