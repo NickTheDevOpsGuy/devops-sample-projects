@@ -1,5 +1,5 @@
 # 🚀 CI/CD with GitHub Actions, ESLint, Jest & Docker
-![CI](https://github.com/<your-username>/ci-cd-github-actions/actions/workflows/ci.yml/badge.svg)
+
 
 This project demonstrates a **Node.js application** with a **CI/CD pipeline** using GitHub Actions. The pipeline runs **ESLint for linting**, **Jest for unit testing**, and optionally **builds/pushes a Docker image** to a registry like GHCR (GitHub Container Registry).
 
