@@ -101,6 +101,7 @@ $ curl http://localhost:3000
 Hello from DevOps Domination Server!
 ```
 
-## 👑 Built for DevOps Domination
-This project is part of the NickDoesDevOps portfolio.
-Follow along the journey at [NickTheDevOpsGuy](https://github.com/NickTheDevOpsGuy)
+## 👑 Part of the NickDoesDevOps Portfolio  
+Follow more projects like this at [github.com/NickTheDevOpsGuy](https://github.com/NickTheDevOpsGuy)
+
+> _World Domination, One Pipeline at a Time™_
