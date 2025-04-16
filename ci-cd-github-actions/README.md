@@ -65,10 +65,11 @@ npm test
 ## 🐙 GitHub Actions CI Pipeline
 Located in .github/workflows/ci.yml, this pipeline runs on every push and pull request to main. It includes the following steps:
 
-* 🔄 Checkout code
-* 🟦 Set up Node.js
-* 📦 Install dependencies
-* 🧪 Run tests using Jest
+* 🔁 Matrix testing across Node.js 16, 18, and 20
+* 🧪 Jest tests with HTTP assertions (via Supertest)
+*🐳 Docker build + push to GHCR with both latest and commit SHA tags
+*💾 Coverage artifacts uploaded to Actions
+*🔐 Secrets-based login for secure registry auth
 
 ---
 
