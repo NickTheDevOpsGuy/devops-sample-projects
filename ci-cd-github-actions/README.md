@@ -3,6 +3,19 @@
 
 This project demonstrates a **Node.js application** with a **CI/CD pipeline** using GitHub Actions. The pipeline runs **Jest for unit testing**, and optionally **builds/pushes a Docker image** to a registry like GHCR (GitHub Container Registry).
 
+![CI](https://github.com/NickTheDevOpsGuy/ci-cd-github-actions/actions/workflows/ci.yml/badge.svg)
+
+> _World Domination, One Pipeline at a Time™_
+
+This is a **Node.js demo project** showcasing a production-grade DevOps CI/CD pipeline with:
+
+* ✅ GitHub Actions matrix testing (Node 16, 18, 20)
+* ✅ Jest test coverage
+* ✅ Docker image build & push to GitHub Container Registry (GHCR)
+* ✅ Hardened Dockerfile using a non-root user
+* ✅ Commit SHA-based Docker image tags
+* ✅ Coverage artifacts uploaded with each run
+
 ---
 
 ## 🧱 Project Structure
