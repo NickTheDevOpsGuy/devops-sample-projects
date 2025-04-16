@@ -1,5 +1,4 @@
-# 🚀 CI/CD with GitHub Actions, Jest, and Docker
-
+# 🧪 NickDoesDevOps: Node.js CI/CD Example with GHCR + GitHub Actions
 
 This project demonstrates a **Node.js application** with a **CI/CD pipeline** using GitHub Actions. The pipeline runs **Jest for unit testing**, and optionally **builds/pushes a Docker image** to a registry like GHCR (GitHub Container Registry).
 
