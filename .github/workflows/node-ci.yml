@@ -16,6 +16,10 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+
     defaults:
       run:
         working-directory: ci-cd-github-actions
@@ -24,10 +28,10 @@ jobs:
     - name: ⬇️ Checkout code
       uses: actions/checkout@v4
 
-    - name: ⚙️ Set up Node.js
+    - name: ⚙️ Set up Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: ${{ matrix.node-version }}
 
     - name: 📦 Install dependencies
       run: npm install
@@ -51,12 +55,13 @@ jobs:
       run: |
         USERNAME_LOWER=$(echo "${{ secrets.CR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
         IMAGE_ID=ghcr.io/$USERNAME_LOWER/node-ci-app
-        IMAGE_TAG=latest
-        docker build -t $IMAGE_ID:$IMAGE_TAG .
+        GIT_TAG=${{ github.sha }}
+        docker build -t $IMAGE_ID:$GIT_TAG -t $IMAGE_ID:latest .
 
     - name: 🚀 Push Docker image
       run: |
         USERNAME_LOWER=$(echo "${{ secrets.CR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
         IMAGE_ID=ghcr.io/$USERNAME_LOWER/node-ci-app
-        IMAGE_TAG=latest
-        docker push $IMAGE_ID:$IMAGE_TAG
+        GIT_TAG=${{ github.sha }}
+        docker push $IMAGE_ID:$GIT_TAG
+        docker push $IMAGE_ID:latest
