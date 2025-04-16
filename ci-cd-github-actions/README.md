@@ -3,7 +3,7 @@
 
 This project demonstrates a **Node.js application** with a **CI/CD pipeline** using GitHub Actions. The pipeline runs **Jest for unit testing**, and optionally **builds/pushes a Docker image** to a registry like GHCR (GitHub Container Registry).
 
-![CI](https://github.com/NickTheDevOpsGuy/ci-cd-github-actions/actions/workflows/ci.yml/badge.svg?branch=develop)
+![CI](https://github.com/NickTheDevOpsGuy/devops-sample-projects/actions/workflows/node-ci.yml/badge.svg?branch=develop)
 
 > _World Domination, One Pipeline at a Time™_
 
