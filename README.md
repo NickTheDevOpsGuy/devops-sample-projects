@@ -5,7 +5,7 @@ A curated collection of hands-on DevOps labs and real-world workflows I’ve bui
 ## 🔁 Projects Included
 
 | Project | Description | Tools |
-|--------|-------------|-------|
+|-----------|-------------|-------|
 | [`ci-cd-github-actions`](./ci-cd-github-actions) | CI/CD pipeline with GitHub Actions | GitHub Actions, Docker |
 | [`aks-monitoring-lab`](./aks-monitoring-lab) | Monitoring AKS with Azure Monitor + App Insights | AKS, Azure Monitor |
 | [`gitops-argocd-lab`](./gitops-argocd-lab) | GitOps workflow with ArgoCD | Kubernetes, ArgoCD |
