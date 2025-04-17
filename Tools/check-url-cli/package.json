@@ -1,0 +1,23 @@
+{
+  "name": "check-url",
+  "version": "1.0.0",
+  "type": "commonjs",
+  "main": "src/commands/check-url/check-url.ts",
+  "bin": {
+    "checkurl": "./src/commands/check-url/check-url.ts"
+  },
+  "scripts": {
+    "start": "ts-node src/commands/check-url/check-url.ts",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "minimist": "^1.2.8"
+  },
+  "devDependencies": {
+    "@types/minimist": "^1.2.5",
+    "@types/node": "^20.11.30",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
