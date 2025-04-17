@@ -10,6 +10,10 @@ A curated collection of hands-on DevOps labs and real-world workflows I’ve bui
 | [`aks-monitoring-lab`](./aks-monitoring-lab) | Monitoring AKS with Azure Monitor + App Insights | AKS, Azure Monitor |
 | [`gitops-argocd-lab`](./gitops-argocd-lab) | GitOps workflow with ArgoCD | Kubernetes, ArgoCD |
 | [`terraform-azure-infra`](./terraform-azure-infra) | IaC using Terraform for Azure | Terraform, Azure |
+| [`check-url-cli](./Tools/check-url-cli) | check-url is a DevOps-ready CLI tool built with TypeScript that allows you to check the availability and response status of one or more URLs in parallel. | TypeScript |
+
+
+https://github.com/NickTheDevOpsGuy/devops-sample-projects/tree/develop/Tools/check-url-cli
 
 ---
 
