@@ -18,4 +18,4 @@ A curated collection of hands-on DevOps labs and real-world workflows I’ve bui
 
 This is part of my **World Domination** journey—mastering DevOps tools and principles, building real-world labs, and sharing knowledge with the community.
 
-Follow me on [LinkedIn](https://www.linkedin.com/in/nicholaclark) to see more behind-the-scenes learning.
+Follow me on [LinkedIn](https://www.linkedin.com/in/nichol-a-clark) to see more behind-the-scenes learning.
