@@ -1,0 +1,6 @@
+# Bicep
+*.brg
+# Local files
+*.log
+# Terraform (if any)
+.terraform/
