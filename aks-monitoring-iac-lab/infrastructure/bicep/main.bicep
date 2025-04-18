@@ -1,21 +1,21 @@
 targetScope = 'resourceGroup'
 
 @description('Azure region, e.g. eastus')
-param location string = resourceGroup().location
+param location      string = resourceGroup().location
 
-@description('Name of the AKS cluster')
-param aksName string = 'MyAKSCluster'
+@description('AKS cluster name')
+param aksName       string = 'MyAKSCluster'
 
-@description('Name of the Log Analytics workspace')
+@description('Log Analytics workspace name')
 param workspaceName string = 'aks-monitoring-ws'
 
+// Deploy Log Analytics
 module logWs 'modules/logAnalytics.bicep' = {
   name: 'deployLogAnalytics'
-  params: {
-    workspaceName: workspaceName
-  }
+  params: { workspaceName: workspaceName }
 }
 
+// Deploy AKS cluster
 module aksDeploy 'modules/aksCluster.bicep' = {
   name: 'deployAKSCluster'
   params: {

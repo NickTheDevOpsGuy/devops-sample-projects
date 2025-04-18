@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RG=${1:-YourResourceGroupName}
+RG="${1:-YourResourceGroupName}"
 DEP=$(az deployment group show -g "${RG}" -n main --query properties.outputs -o json)
 CLUSTER=$(echo "${DEP}" | jq -r .aksClusterName.value)
 WORKSPACE_ID=$(echo "${DEP}" | jq -r .logAnalyticsWorkspaceId.value)

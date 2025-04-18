@@ -7,9 +7,7 @@ param logAnalyticsWorkspaceId string
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-09-01' = {
   name: aksName
   location: resourceGroup().location
-  identity: {
-    type: 'SystemAssigned'
-  }
+  identity: { type: 'SystemAssigned' }
   properties: {
     dnsPrefix: toLower('${aksName}-dns')
     agentPoolProfiles: [
@@ -32,13 +30,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-09-01' = {
     }
     linuxProfile: {
       adminUsername: 'azureuser'
-      ssh: {
-        publicKeys: [
-          {
-            keyData: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC...'
-          }
-        ]
-      }
+      ssh: { publicKeys: [ { keyData: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC...' } ] }
     }
     networkProfile: {
       networkPlugin: 'azure'

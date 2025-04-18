@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RG=${1:-YourResourceGroupName}
-ENV=${2:-dev}
+RG="${1:-YourResourceGroupName}"
+ENV="${2:-dev}"
 
 echo "➡️ Deploying infrastructure to ${RG} (${ENV})..."
-# ensure you set your subscription
 az account set --subscription "<YOUR-SUBSCRIPTION-ID>"
 az group create --name "${RG}" --location eastus
 
