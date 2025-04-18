@@ -24,37 +24,39 @@ Deploy your entire AKS monitoring stack—including Log Analytics and the AKS cl
 aks-monitoring-iac-lab/
 ├── .github/
 │   └── workflows/
-│       ├── ci.yaml            # Lint/Bicep validate + test connectivity
-│       └── cd.yaml            # Deploy infra → smoke tests
+│       ├── ci.yaml
+│       └── cd.yaml
+├── charts/
+│   └── my‑app/
+├── docs/
+│   └── architecture.md
 ├── infrastructure/
-│   ├── bicep/                 
-│   │   ├── modules/           
-│   │   │   ├── logAnalytics.bicep
-│   │   │   └── aksCluster.bicep
-│   │   ├── main.bicep         # Imports modules
+│   ├── bicep/
+│   │   ├── main.bicep
 │   │   ├── parameters.dev.json
-│   │   └── parameters.prod.json
-│   └── terraform/             # (Optional) if you want Terraform parity
-│       ├── modules/
+│   │   ├── parameters.prod.json
+│   │   └── modules/
+│   │       ├── logAnalytics.bicep
+│   │       └── aksCluster.bicep
+│   └── terraform/
 │       ├── main.tf
 │       └── variables.tf
 ├── manifests/
 │   └── nginx-deployment.yaml
 ├── scripts/
-│   ├── deploy-infra.sh        # Wraps az deployment group create
-│   ├── deploy-app.sh          # kubectl apply + expose
-│   ├── query-metrics.sh       # CLI queries for node_cpu_usage_percentage :contentReference[oaicite:1]{index=1}
-│   ├── create-alert.sh
+│   ├── deploy-infra.sh
+│   ├── deploy-app.sh
+│   ├── query-metrics.sh
 │   └── cleanup.sh
 ├── tests/
-│   ├── connectivity.sh        # e.g. `kubectl get nodes` + exit code check
-│   ├── metrics-query.sh       # Run az monitor metrics list -> assert output
-│   └── alert-smoke.sh         # Validate `az monitor metrics alert list`
-├── docs/
-│   └── architecture.md
+│   ├── connectivity.sh
+│   ├── metrics-query.sh
+│   └── alert-smoke.sh
 ├── .gitignore
 ├── LICENSE
-└── README.md
+├── README.md
+└── nginx-deployment.yaml
+
 ```
 
 ## 4. Write the Bicep Template
