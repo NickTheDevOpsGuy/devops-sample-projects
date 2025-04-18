@@ -7,9 +7,6 @@ A curated collection of hands-on DevOps labs and real-world workflows I’ve bui
 | Project                 | Description                                                                                                                      | Tools                             |
 |-------------------------|----------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
 | [`ci-cd-github-actions`](./ci-cd-github-actions)   | CI/CD pipeline with GitHub Actions                                                                                               | GitHub Actions, Docker            |
-| [`aks-monitoring-lab`](./aks-monitoring-lab)      | Monitoring AKS with Azure Monitor and Application Insights                                                                       | AKS, Azure Monitor, App Insights  |
-| [`gitops-argocd-lab`](./gitops-argocd-lab)        | GitOps workflow with ArgoCD                                                                                                       | Kubernetes, ArgoCD                |
-| [`terraform-azure-infra`](./terraform-azure-infra)   | Infrastructure as Code using Terraform for Azure                                                                                  | Terraform, Azure                  |
 | [`check-url-cli`](./Tools/check-url-cli)          | DevOps‑ready CLI tool in TypeScript to check availability and response status of one or more URLs in parallel                    | TypeScript                        |
 
 ---
