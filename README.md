@@ -4,10 +4,14 @@ A curated collection of hands-on DevOps labs and real-world workflows I’ve bui
 
 ## 🔁 Projects Included
 
-| Project                 | Description                                                                                                                      | Tools                             |
-|------------------------------|----------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
-| [`ci-cd-github-actions`](./ci-cd-github-actions)          | CI/CD pipeline with GitHub Actions                                                                                               | GitHub Actions, Docker            |
-| [`check-url-cli`](./Tools/check-url-cli)          | DevOps‑ready CLI tool in TypeScript to check availability and response status of one or more URLs in parallel                    | TypeScript                        |
+| Project                  | Description                                                                                                 | Tools                      |
+|--------------------------|-------------------------------------------------------------------------------------------------------------|----------------------------|
+| [ci-cd-github-actions][] | CI/CD pipeline with GitHub Actions                                                                          | GitHub Actions, Docker     |
+| [check-url-cli][]        | DevOps‑ready CLI tool in TypeScript to check availability and response status of one or more URLs in parallel | TypeScript                 |
+
+[ci-cd-github-actions]: ./ci-cd-github-actions
+[check-url-cli]:      ./Tools/check-url-cli
+
 
 ---
 
