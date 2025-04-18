@@ -7,7 +7,7 @@ A curated collection of hands-on DevOps labs and real-world workflows I’ve bui
 | Project                                                    | Description                                                                                                 | Tools                      |
 |------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|----------------------------|
 | [ci&#8209;cd&#8209;github&#8209;actions](./ci-cd-github-actions) | CI/CD pipeline with GitHub Actions                                                                          | GitHub Actions, Docker     |
-| [check&#8209;url&#8209;cli](./Tools/check-url-cli)              | DevOps‑ready CLI tool in TypeScript to check availability and response status of one or more URLs in parallel | TypeScript                 |
+| [check&#8209;url&#8209;cli](./Tools/check-url-cli)              | Check availability and response status of one or more URLs in parallel | TypeScript                 |
 
 
 ---
