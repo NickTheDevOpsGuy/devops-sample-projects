@@ -7,23 +7,25 @@ This project includes a simplified Bicep deployment that sets up a Virtual Netwo
 aks-monitoring-iac-lab/
 ├── infrastructure/
 │   └── bicep/
-│       └── main.bicep
-│   └── modules/
-│       └── aks.bicep
-│       └── monitoring.bicep
-│       └── network-watcher.bicep
-│       └── network.bicep
+│       ├── main.bicep
+│       ├── parameters.dev.json
+│       └── modules/
+│           ├── aks.bicep
+│           ├── monitoring.bicep
+│           ├── network-watcher.bicep
+│           └── network.bicep
 ├── scripts/
-│   └── deploy.sh
+│   ├── deploy.sh
 │   └── cleanup.sh
 ├── .gitignore
 ├── LICENSE
 ├── README.md
+
 ```
 
 ## 🚀 Deploy It
 
-```bash
+```~~bash~~
 ./deploy.sh <resource-group-name> [location]
 ```
 
