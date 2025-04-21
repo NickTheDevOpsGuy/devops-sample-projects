@@ -1,0 +1,9 @@
+{
+    "location": {
+      "value": "eastus"
+    },
+    "environment": {
+      "value": "dev"
+    }
+  }
+  

@@ -1,0 +1,17 @@
+# Bicep
+*.brg
+
+# Terraform
+.terraform/
+terraform.tfstate*
+terraform.tfstate.backup
+
+# Local logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
