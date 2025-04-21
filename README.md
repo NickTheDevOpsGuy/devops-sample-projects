@@ -1,8 +1,75 @@
-# 💻 DevOPS sample projects
+# 🧰 DevOps Sample Projects
 
-| Project | Description | Stack |
-|--------|-------------|-------|
-| [`ci-cd-github-actions`](https://github.com/NickTheDevOpsGuy/devops-sample-projects/tree/develop/ci-cd-github-actions) | CI/CD pipeline with GitHub Actions | GitHub Actions, Docker |
-| [`aks-monitoring-iac-lab`](https://github.com/NickTheDevOpsGuy/devops-sample-projects/tree/develop/aks-monitoring-iac-lab) | Monitoring AKS |
-| [`check-url-cli`](https://github.com/NickTheDevOpsGuy/devops-sample-projects/tree/develop/Tools/check-url-cli) | Tool to check URL via CLI | TypeScript |
+Welcome to my **DevOps project portfolio** — a growing collection of real-world infrastructure, automation, and observability labs built with Azure, Bicep, GitHub Actions, Kubernetes, and more.
 
+This repository showcases how I approach DevOps work hands-on: through repeatable, modular, and production-aware patterns. 💥
+
+> 🔄 Each folder in this repo is a standalone, working sample — built from scratch, tested, and documented.
+
+---
+
+## 📁 Project Directory
+
+| Project Folder | Description |
+|----------------|-------------|
+| [`aks-monitoring-iac-lab`](./aks-monitoring-iac-lab) | Deploy AKS with Bicep, VNet, Log Analytics, and scripted automation |
+| [`ci-cd-github-actions`](./ci-cd-github-actions) | GitHub Actions pipeline with linting, testing, and Docker image build/push |
+| [`check-url`](./check-url) | TypeScript CLI tool for parallel URL health checks, built DevOps-style |
+| *(more coming soon...)* | GitOps, Helm charts, FluxCD, multi-environment IaC... stay tuned |
+
+---
+
+## 🧠 Why This Repo Exists
+
+This is where I experiment, learn, and document:
+- Azure-native IaC with **Bicep**
+- Kubernetes patterns with **AKS**
+- GitHub-native CI/CD with **GitHub Actions**
+- CLI tooling and scripting in **TypeScript + Python**
+- Observability, security, and GitOps
+
+Each project is modular, testable, and includes scripts or templates you can use.
+
+---
+
+## 🚀 How to Use These Projects
+
+Clone the repo:
+
+```bash
+git clone https://github.com/NickTheDevOpsGuy/devops-sample-projects.git
+cd devops-sample-projects
+```
+
+Each folder has its own README.md with setup instructions.
+Use them to test out ideas, fork them for your own infra, or just explore how I build things.
+
+## ✍️ Author
+Nick Clark
+Cloud | DevOps | IaC | Kubernetes
+github.com/NickTheDevOpsGuy
+linkedin.com/in/nicholas-a-clark
+
+🧠 #NickDoesDevOps
+🚀 #LearningInPublic
+🔧 #WorldDomination
+
+##📬 Want More?
+Check out:
+
+*My GitHub Actions CI/CD lab
+*My AKS + Monitoring Infrastructure Lab
+*My blog on LinkedIn
+
+```yaml
+
+---
+
+Let me know if you want:
+- A badges row (CI ✅, Last Commit 🕒)
+- GIF previews of your tools in action
+- A “featured project” highlight banner
+
+This README now speaks for you when recruiters, engineers, or future bosses show up. Want me to push it to your `develop` branch for you?
+
+```
