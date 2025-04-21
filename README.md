@@ -54,7 +54,7 @@ linkedin.com/in/nicholas-a-clark
 🚀 #LearningInPublic
 🔧 #WorldDomination
 
-##📬 Want More?
+## 📬 Want More?
 Check out:
 
 *My GitHub Actions CI/CD lab
