@@ -8,7 +8,17 @@ aks-monitoring-iac-lab/
 ├── infrastructure/
 │   └── bicep/
 │       └── main.bicep
-├── deploy.sh
+│   └── modules/
+│       └── aks.bicep
+│       └── monitoring.bicep
+│       └── network-watcher.bicep
+│       └── network.bicep
+├── scripts/
+│   └── deploy.sh
+│   └── cleanup.sh
+├── .gitignore
+├── LICENSE
+├── README.md
 ```
 
 🚀 Deploy It
@@ -30,6 +40,12 @@ This will:
 * 🔍 Deploy Azure Network Watcher into the same resource group
 * 🧠 Avoid auto-created NetworkWatcherRG_* resource groups
 
+🧹 How to Clean Up
+``bash
+./cleanup.sh NickClarkRG
+```
+Prompts you to confirm deletion before destroying everything inside the resource group.
+
 🆘 Help
 
 ```bash
@@ -42,6 +58,14 @@ Displays usage instructions with emoji prompts 💬
 * Logged in with Azure CLI: az login
 * Subscription access with permission to deploy resources
 * Azure CLI version 2.30+ (for Bicep support)
+
+🧠 Current Features
+
+* ✅ Modular Bicep architecture
+* ✅ Per-environment parameter support (dev, prod, etc.)
+* ✅ Clean deploy/cleanup CLI scripts with emoji prompts
+* ✅ Linked AKS to Log Analytics
+* ✅ Automatic kubeconfig setup after deploy
 
 ## 👑 Part of the NickDoesDevOps Portfolio  
 Follow more projects like this at [github.com/NickTheDevOpsGuy](https://github.com/NickTheDevOpsGuy)
