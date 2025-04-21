@@ -1,41 +1,27 @@
 targetScope = 'resourceGroup'
 
-param location string = resourceGroup().location
-param environment string
-param aksName string
-param workspaceName string
-
-module network 'modules/network.bicep' = {
-  name: 'network'
-  params: {
-    location: location
-    environment: environment
+resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+  name: 'nick-vnet'
+  location: resourceGroup().location
+  properties: {
+    addressSpace: {
+      addressPrefixes: [
+        '10.0.0.0/16'
+      ]
+    }
+    subnets: [
+      {
+        name: 'default'
+        properties: {
+          addressPrefix: '10.0.1.0/24'
+        }
+      }
+    ]
   }
 }
 
-module aks 'modules/aks.bicep' = {
-  name: 'aks'
-  params: {
-    location: location
-    environment: environment
-    aksName: aksName
-    subnetId: network.outputs.subnetId
-  }
-}
-
-module monitoring 'modules/monitoring.bicep' = {
-  name: 'monitoring'
-  params: {
-    location: location
-    environment: environment
-    workspaceName: workspaceName
-  }
-}
-
-module grafana 'modules/grafana.bicep' = {
-  name: 'grafana'
-  params: {
-    location: location
-    environment: environment
-  }
+resource networkWatcher 'Microsoft.Network/networkWatchers@2021-05-01' = {
+  name: 'NetworkWatcher_${resourceGroup().location}'
+  location: resourceGroup().location
+  properties: {}
 }

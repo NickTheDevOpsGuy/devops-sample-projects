@@ -1,118 +1,49 @@
-# 💻 AKS Monitoring Lab as IaC (Bicep)
+🧱 Quick Start: Deploy the VNet + Network Watcher
+This project includes a simplified Bicep deployment that sets up a Virtual Network and Network Watcher inside a single Azure resource group.
 
-Provision and monitor an AKS cluster end‑to‑end using infrastructure as code.  
-You’ll deploy:
+📦 Folder Structure (Relevant Parts)
 
-- A **Log Analytics** workspace  
-- An **AKS** cluster with the **Container Insights** add‑on  
-- A sample **NGINX** application to generate metrics & logs  
-- (Optional) **Grafana** dashboards via Helm  
-
-All resources are defined as **Bicep modules** (with a **Terraform** alternative), and helper scripts, manifests, tests, and CI/CD pipelines glue everything together.
-
----
-
-## 📦 What’s Included
-
-- ☸️ Azure Kubernetes Service (AKS)
-- 📈 Azure Monitor with Managed Prometheus
-- 📊 Azure Managed Grafana Dashboards
-- 🧱 Modular Bicep Templates
-- 🔁 GitOps with FluxCD
-- 🛡 Defender for DevOps Integration
-- 🚀 GitHub Actions CI Pipeline
-
-## Repo & Files
-```graphql
+``graphql
 aks-monitoring-iac-lab/
-│   ├── bicep/
-│   ├── main.bicep
-├── .gitignore
-├── LICENSE
-├── README.md
-
+├── infrastructure/
+│   └── bicep/
+│       └── main.bicep
+├── deploy.sh
 ```
 
-## 🧱 Bicep Module Breakdown
-
-Each part of the infrastructure is modularized:
-
-| Module            | Description                                  |
-|-------------------|----------------------------------------------|
-| `network.bicep`   | Sets up VNet and AKS subnet                  |
-| `aks.bicep`       | Deploys AKS with system-assigned identity    |
-| `monitoring.bicep`| Creates Log Analytics + Prometheus alerts    |
-| `grafana.bicep`   | Provisions Azure Managed Grafana             |
-
-
-
-⚙️ Usage
-✅ 1. Prerequisites
-
-* Azure CLI logged in
-* Subscription with Contributor access
-* GitHub repo secrets set for AZURE_CREDENTIALS
-
-▶️ 2. Deploy with Azure CLI
+🚀 Deploy It
 
 ```bash
-az deployment sub create \
-  --location eastus \
-  --template-file main.bicep \
-  --parameters rgName=NickClarkRG
+./deploy.sh <resource-group-name> [location]
 ```
 
-## 🛠 3. GitOps: Install Flux
+Example:
 
 ```bash
-az k8s-configuration flux create \
-  --resource-group NickClarkRG \
-  --cluster-name nick-aks \
-  --name flux-config \
-  --namespace flux-system \
-  --cluster-type managedClusters \
-  --scope cluster \
-  --url https://github.com/NickTheDevOpsGuy/flux-apps \
-  --branch main \
-  --sync-interval 3m
+./deploy.sh NickClarkRG eastus
 ```
 
-## 📊 Dashboards
+This will:
 
-Azure Managed Grafana is deployed and accessible at:
+* ✅ Create the resource group (if it doesn’t exist)
+* 🧱 Deploy a VNet and subnet
+* 🔍 Deploy Azure Network Watcher into the same resource group
+* 🧠 Avoid auto-created NetworkWatcherRG_* resource groups
 
-| https://<grafana-name>.grafana.azure.com
+🆘 Help
 
-You can import dashboards like:
+```bash
+./deploy.sh -h
+```
+Displays usage instructions with emoji prompts 💬
 
-* 🧠 Kubernetes Prometheus Dashboard – ID: 6417
+📥 Prerequisites
 
-Or create your own visualizations for:
+* Logged in with Azure CLI: az login
+* Subscription access with permission to deploy resources
+* Azure CLI version 2.30+ (for Bicep support)
 
-* Node health
-* CPU/memory usage
-* Pod restarts
-* Custom alerts
+## 👑 Part of the NickDoesDevOps Portfolio  
+Follow more projects like this at [github.com/NickTheDevOpsGuy](https://github.com/NickTheDevOpsGuy)
 
-🔐 CI/CD & Security
-GitHub Actions Workflow
-Located at .github/workflows/deploy.yml, it handles:
-
-* 🔁 Bicep deployment
-* 🛡 CodeQL scanning
-* 🔒 Defender for DevOps integration
-
-## 🧠 Lessons Learned
-
-* Modularizing Bicep enhances maintainability.
-* Azure Managed Prometheus + Grafana provide robust observability.
-* GitOps ensures consistent and auditable deployments.
-* Defender for DevOps integrates security into the CI/CD pipeline.
-
-## 🙌 Author
-
-Nick Clark
-
-* 🌐 LinkedIn
-* 🐙 GitHub
-* 🔖 #NickDoesDevOps
+> _World Domination, One Pipeline at a Time™_
