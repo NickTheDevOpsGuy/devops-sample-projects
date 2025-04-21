@@ -14,7 +14,7 @@ This repository showcases how I approach DevOps work hands-on: through repeatabl
 |----------------|-------------|
 | [`aks-monitoring-iac-lab`](./aks-monitoring-iac-lab) | Deploy AKS with Bicep, VNet, Log Analytics, and scripted automation |
 | [`ci-cd-github-actions`](./ci-cd-github-actions) | GitHub Actions pipeline with linting, testing, and Docker image build/push |
-| [`check-url`](./Tools/check-url) | TypeScript CLI tool for parallel URL health checks, built DevOps-style |
+| [`check-url`](./Tools/check-url-cli) | TypeScript CLI tool for parallel URL health checks, built DevOps-style |
 | *(more coming soon...)* | GitOps, Helm charts, FluxCD, multi-environment IaC... stay tuned |
 
 ---
