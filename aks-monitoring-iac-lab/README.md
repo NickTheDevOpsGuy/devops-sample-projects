@@ -10,288 +10,139 @@ You’ll deploy:
 
 All resources are defined as **Bicep modules** (with a **Terraform** alternative), and helper scripts, manifests, tests, and CI/CD pipelines glue everything together.
 
-
 ---
 
-## 1. Objective
-- Provision a **Log Analytics** workspace  
-- Deploy an **AKS** cluster with the **monitoring** addon enabled  
-- Connect via `kubectl` and verify node readiness  
-- Deploy a sample **NGINX** app and generate load  
-- Query **node_cpu_usage_percentage** via CLI  
-- (Bonus) Install **Grafana** with Helm
+## 📦 What’s Included
 
-## 2. Prerequisites
-- Azure CLI & Bicep
-- kubectl
-- Helm 3
-- Contributor access to an Azure subscription
-- Resource Group: `YourOwnResourceGroupName`
+- ☸️ Azure Kubernetes Service (AKS)
+- 📈 Azure Monitor with Managed Prometheus
+- 📊 Azure Managed Grafana Dashboards
+- 🧱 Modular Bicep Templates
+- 🔁 GitOps with FluxCD
+- 🛡 Defender for DevOps Integration
+- 🚀 GitHub Actions CI Pipeline
 
-## 3. Repo & Files
+## Repo & Files
 ```graphql
 aks-monitoring-iac-lab/
 ├── .github/
 │   └── workflows/
 │       ├── ci.yaml
 │       └── cd.yaml
-├── charts/
-│   └── my‑app/
 ├── docs/
 │   └── architecture.md
+├── flux-apps/
+│   └── kustomizations.yaml
 ├── infrastructure/
 │   ├── bicep/
-│   │   ├── main.bicep
-│   │   ├── parameters.dev.json
-│   │   ├── parameters.prod.json
 │   │   └── modules/
-│   │       ├── logAnalytics.bicep
-│   │       └── aksCluster.bicep
+│   │       ├── aks.bicep
+│   │       └── grafana.bicep
+│   │       └── log.bicep
+│   │       └── monitoring.bicep
+│   │       └── network.bicep
 │   └── terraform/
 │       ├── main.tf
+│       └── README.md
 │       └── variables.tf
 ├── manifests/
 │   └── nginx-deployment.yaml
 ├── scripts/
-│   ├── deploy-infra.sh
+│   ├── cleanup.sh
 │   ├── deploy-app.sh
-│   ├── query-metrics.sh
+│   ├── deploy-infra.sh
 │   └── cleanup.sh
 ├── tests/
-│   ├── connectivity.sh
-│   ├── metrics-query.sh
-│   └── alert-smoke.sh
+│   ├── aks-connectivity-test.sh
+│   ├── altert-smoke-query.sh
+│   └── connectivity.sh
+│   └── query-metrics.sh
 ├── .gitignore
 ├── LICENSE
 ├── README.md
-└── nginx-deployment.yaml
 
 ```
 
-## 4. Write the Bicep Template
+## 🧱 Bicep Module Breakdown
 
-Create main.bicep:
+Each part of the infrastructure is modularized:
 
-```bicep
-targetScope = 'resourceGroup'
+| Module            | Description                                  |
+|-------------------|----------------------------------------------|
+| `network.bicep`   | Sets up VNet and AKS subnet                  |
+| `aks.bicep`       | Deploys AKS with system-assigned identity    |
+| `monitoring.bicep`| Creates Log Analytics + Prometheus alerts    |
+| `grafana.bicep`   | Provisions Azure Managed Grafana             |
 
-@description('Location for all resources')
-param location string = resourceGroup().location
 
-@description('Name of the AKS cluster')
-param aksName string = 'MyAKSCluster'
 
-@description('Name of the Log Analytics workspace')
-param workspaceName string = 'aks-monitoring-ws'
+⚙️ Usage
+✅ 1. Prerequisites
 
-var dnsPrefix = toLower('${aksName}-dns')
+* Azure CLI logged in
+* Subscription with Contributor access
+* GitHub repo secrets set for AZURE_CREDENTIALS
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-06-01' = {
-  name: workspaceName
-  location: location
-  properties: {
-    retentionInDays: 30
-  }
-  sku: {
-    name: 'PerGB2018'
-  }
-}
-
-resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-09-01' = {
-  name: aksName
-  location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  properties: {
-    dnsPrefix: dnsPrefix
-    agentPoolProfiles: [
-      {
-        name: 'agentpool'
-        count: 2
-        vmSize: 'Standard_D2s_v3'
-        osType: 'Linux'
-        type: 'VirtualMachineScaleSets'
-        mode: 'System'
-      }
-    ]
-    addonProfiles: {
-      omsagent: {
-        enabled: true
-        config: {
-          logAnalyticsWorkspaceResourceID: logAnalytics.id
-        }
-      }
-    }
-    linuxProfile: {
-      adminUsername: 'azureuser'
-      ssh: {
-        publicKeys: [
-          {
-            keyData: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC...' 
-          }
-        ]
-      }
-    }
-    networkProfile: {
-      networkPlugin: 'azure'
-      loadBalancerSku: 'standard'
-    }
-  }
-  tags: {
-    project: 'AKS-Monitoring-IaC'
-  }
-}
-
-output aksClusterName string = aksCluster.name
-output logAnalyticsWorkspaceId string = logAnalytics.id
-```
-
-| Note: Replace the SSH public key in ssh-rsa … with your own.
-
-Optionally create parameters.json to override defaults:
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "aksName": { "value": "MyAKSCluster" },
-    "workspaceName": { "value": "aks-monitoring-ws" },
-    "location": { "value": "eastus" }
-  }
-}
-```
-
-## 5. Deploy via Bicep
-
-1. Log in & set RG
+▶️ 2. Deploy with Azure CLI
 
 ```bash
-az login
-az account set --subscription "<Your-Subscription-ID>"
-az group create --name YourOwnResourceGroupName --location eastus
-```
-
-2. Deploy
-
-```bash
-az deployment group create \
-  --resource-group YourOwnResourceGroupName \
+az deployment sub create \
+  --location eastus \
   --template-file main.bicep \
-  --parameters @parameters.json
+  --parameters rgName=NickClarkRG
 ```
 
-3. Capture outputs
+## 🛠 3. GitOps: Install Flux
 
 ```bash
-export CLUSTER_NAME=$(az deployment group show \
-  --resource-group YourOwnResourceGroupName \
-  --name main \
-  --query properties.outputs.aksClusterName.value -o tsv)
-export WORKSPACE_ID=$(az deployment group show \
-  --resource-group YourOwnResourceGroupName \
-  --name main \
-  --query properties.outputs.logAnalyticsWorkspaceId.value -o tsv)
+az k8s-configuration flux create \
+  --resource-group NickClarkRG \
+  --cluster-name nick-aks \
+  --name flux-config \
+  --namespace flux-system \
+  --cluster-type managedClusters \
+  --scope cluster \
+  --url https://github.com/NickTheDevOpsGuy/flux-apps \
+  --branch main \
+  --sync-interval 3m
 ```
 
-4. Connect & Verify
+## 📊 Dashboards
 
-```bash
-az aks get-credentials \
-  --resource-group YourOwnResourceGroupName \
-  --name $CLUSTER_NAME \
-  --overwrite-existing
+Azure Managed Grafana is deployed and accessible at:
 
-kubectl get nodes
-```
-You should see 2 nodes in Ready state.
+| https://<grafana-name>.grafana.azure.com
 
-## 6. Deploy Sample App & Generate Load
+You can import dashboards like:
 
-1. Create nginx-deployment.yaml (in the same folder):
+* 🧠 Kubernetes Prometheus Dashboard – ID: 6417
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-lab
-spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: nginx-lab
-  template:
-    metadata:
-      labels:
-        app: nginx-lab
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:stable
-        ports:
-        - containerPort: 80
-```
+Or create your own visualizations for:
 
-2. Deploy & expose
+* Node health
+* CPU/memory usage
+* Pod restarts
+* Custom alerts
 
-```bash
-kubectl apply -f nginx-deployment.yaml
-kubectl expose deployment nginx-lab --port=80 --type=LoadBalancer
-```
+🔐 CI/CD & Security
+GitHub Actions Workflow
+Located at .github/workflows/deploy.yml, it handles:
 
-3. Wait for EXTERNAL‑IP
+* 🔁 Bicep deployment
+* 🛡 CodeQL scanning
+* 🔒 Defender for DevOps integration
 
-```bash
-kubectl get svc nginx-lab --watch
-```
+## 🧠 Lessons Learned
 
-4. Generate traffic
+* Modularizing Bicep enhances maintainability.
+* Azure Managed Prometheus + Grafana provide robust observability.
+* GitOps ensures consistent and auditable deployments.
+* Defender for DevOps integrates security into the CI/CD pipeline.
 
-```bash
-kubectl run -i --tty load-gen --rm --image=busybox -- /bin/sh
-while true; do wget -q -O- http://<EXTERNAL-IP>; done
-```
+## 🙌 Author
 
-## 8. Query Metrics & Logs
+Nick Clark
 
-* Node CPU %
-
-```bash
-az monitor metrics list \
-  --resource "/subscriptions/<SubID>/resourceGroups/NickClarkRG/providers/Microsoft.ContainerService/managedClusters/$CLUSTER_NAME" \
-  --metric "node_cpu_usage_percentage" \
-  --interval PT1M
-```
-
-* Container logs (Kusto)
-
-```bash
-az monitor log-analytics query \
-  --workspace "$WORKSPACE_ID" \
-  --analytics-query "ContainerLog | where Image contains 'nginx' | take 20"
-```
-
-## 9. (Optional) Install Grafana with Helm
-
-```bash
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add grafana https://grafana.github.io/helm-charts
-helm repo update
-
-helm install kube-prom prometheus-community/kube-prometheus-stack \
-  --namespace monitoring --create-namespace
-
-helm install aks-graf grafana/grafana \
-  --namespace monitoring \
-  --set adminUser=admin,adminPassword='YourP@ssw0rd'
-
-kubectl port-forward svc/aks-graf 3000:80 -n monitoring
-# Browse http://localhost:3000 (admin/admin)
-```
-
-## 10. Cleanup resources
-
-```bash
-az group delete --name YourOwnResourceGroupName --yes --no-wait
-```
+* 🌐 LinkedIn
+* 🐙 GitHub
+* 🔖 #NickDoesDevOps
