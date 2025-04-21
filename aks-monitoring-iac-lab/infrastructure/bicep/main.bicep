@@ -1,42 +1,41 @@
-targetScope = 'subscription'
+targetScope = 'resourceGroup'
 
-param location string = 'eastus'
-param rgName string = 'NickClarkRG'
-
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: rgName
-  location: location
-}
+param location string = resourceGroup().location
+param environment string
+param aksName string
+param workspaceName string
 
 module network 'modules/network.bicep' = {
-  name: 'vnet'
-  scope: rg
+  name: 'network'
   params: {
     location: location
+    environment: environment
   }
 }
 
 module aks 'modules/aks.bicep' = {
   name: 'aks'
-  scope: rg
   params: {
     location: location
+    environment: environment
+    aksName: aksName
     subnetId: network.outputs.subnetId
   }
 }
 
 module monitoring 'modules/monitoring.bicep' = {
   name: 'monitoring'
-  scope: rg
   params: {
     location: location
+    environment: environment
+    workspaceName: workspaceName
   }
 }
 
 module grafana 'modules/grafana.bicep' = {
   name: 'grafana'
-  scope: rg
   params: {
     location: location
+    environment: environment
   }
 }

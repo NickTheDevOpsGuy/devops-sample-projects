@@ -25,38 +25,8 @@ All resources are defined as **Bicep modules** (with a **Terraform** alternative
 ## Repo & Files
 ```graphql
 aks-monitoring-iac-lab/
-├── .github/
-│   └── workflows/
-│       ├── ci.yaml
-│       └── cd.yaml
-├── docs/
-│   └── architecture.md
-├── flux-apps/
-│   └── kustomizations.yaml
-├── infrastructure/
 │   ├── bicep/
-│   │   └── modules/
-│   │       ├── aks.bicep
-│   │       └── grafana.bicep
-│   │       └── log.bicep
-│   │       └── monitoring.bicep
-│   │       └── network.bicep
-│   └── terraform/
-│       ├── main.tf
-│       └── README.md
-│       └── variables.tf
-├── manifests/
-│   └── nginx-deployment.yaml
-├── scripts/
-│   ├── cleanup.sh
-│   ├── deploy-app.sh
-│   ├── deploy-infra.sh
-│   └── cleanup.sh
-├── tests/
-│   ├── aks-connectivity-test.sh
-│   ├── altert-smoke-query.sh
-│   └── connectivity.sh
-│   └── query-metrics.sh
+│   ├── main.bicep
 ├── .gitignore
 ├── LICENSE
 ├── README.md
