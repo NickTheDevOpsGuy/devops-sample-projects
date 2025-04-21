@@ -1,0 +1,32 @@
+name: Bicep Deployment + Security
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Bicep
+        run: |
+          az deployment sub create \
+            --location eastus \
+            --template-file main.bicep \
+            --parameters rgName=NickClarkRG
+
+      - name: CodeQL Init
+        uses: github/codeql-action/init@v2
+        with:
+          languages: bicep
+
+      - name: CodeQL Analyze
+        uses: github/codeql-action/analyze@v2

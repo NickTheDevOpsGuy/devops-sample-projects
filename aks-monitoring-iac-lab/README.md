@@ -1,6 +1,15 @@
 # 💻 AKS Monitoring Lab as IaC (Bicep)
 
-Deploy your entire AKS monitoring stack—including Log Analytics and the AKS cluster with Container Insights—using a single Bicep template. You’ll then connect, verify, and deploy a sample app.
+Provision and monitor an AKS cluster end‑to‑end using infrastructure as code.  
+You’ll deploy:
+
+- A **Log Analytics** workspace  
+- An **AKS** cluster with the **Container Insights** add‑on  
+- A sample **NGINX** application to generate metrics & logs  
+- (Optional) **Grafana** dashboards via Helm  
+
+All resources are defined as **Bicep modules** (with a **Terraform** alternative), and helper scripts, manifests, tests, and CI/CD pipelines glue everything together.
+
 
 ---
 
