@@ -2,3 +2,4 @@ node_modules
 dist
 log.txt
 results.json
+package-lock.json
