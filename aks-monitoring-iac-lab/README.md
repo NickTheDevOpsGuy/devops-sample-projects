@@ -23,6 +23,9 @@ All infrastructure is defined using modular [Bicep](https://learn.microsoft.com/
 
 ```graphql
 aks-monitoring-iac-lab/
+├── .github/
+│   └── workflow/
+│   └── validate.yml
 ├── infrastructure/
 │   └── bicep/
 │       ├── main.bicep
