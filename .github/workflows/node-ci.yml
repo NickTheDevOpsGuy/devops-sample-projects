@@ -1,0 +1,67 @@
+name: CI Pipeline
+
+on:
+  push:
+    paths:
+      - '.github/workflows/**'
+      - 'ci-cd-github-actions/**'
+    branches: [ "develop" ]
+  pull_request:
+    paths:
+      - '.github/workflows/**'
+      - 'ci-cd-github-actions/**'
+    branches: [ "develop" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
+
+    defaults:
+      run:
+        working-directory: ci-cd-github-actions
+
+    steps:
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Set up Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: 📦 Install dependencies
+      run: npm install
+
+    - name: 🧪 Run Jest tests
+      run: npm test
+
+    - name: 📊 Generate coverage report
+      run: npm run coverage
+
+    - name: 💾 Upload coverage artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: coverage/
+
+    - name: 🐳 Log in to GitHub Container Registry
+      run: echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u "${{ secrets.CR_USERNAME }}" --password-stdin
+
+    - name: 🏗️ Build Docker image
+      run: |
+        USERNAME_LOWER=$(echo "${{ secrets.CR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
+        IMAGE_ID=ghcr.io/$USERNAME_LOWER/node-ci-app
+        GIT_TAG=${{ github.sha }}
+        docker build -t $IMAGE_ID:$GIT_TAG -t $IMAGE_ID:latest .
+
+    - name: 🚀 Push Docker image
+      run: |
+        USERNAME_LOWER=$(echo "${{ secrets.CR_USERNAME }}" | tr '[:upper:]' '[:lower:]')
+        IMAGE_ID=ghcr.io/$USERNAME_LOWER/node-ci-app
+        GIT_TAG=${{ github.sha }}
+        docker push $IMAGE_ID:$GIT_TAG
+        docker push $IMAGE_ID:latest
