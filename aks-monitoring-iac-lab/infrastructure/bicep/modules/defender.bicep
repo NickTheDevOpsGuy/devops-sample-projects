@@ -1,9 +1,5 @@
-@description('Name of the Defender plan')
+@description('Plan name for Defender')
 param planName string = 'default'
-@description('Location')
-param location string
-@description('AKS Resource ID')
-param aksResourceId string
 
 resource defender 'Microsoft.Security/pricings@2022-01-01-preview' = {
   name: 'ContainerRegistry'
@@ -12,7 +8,7 @@ resource defender 'Microsoft.Security/pricings@2022-01-01-preview' = {
   }
 }
 
-resource k8sDefender 'Microsoft.Security/autoProvisioningSettings@2022-01-01-preview' = {
+resource autoProvision 'Microsoft.Security/autoProvisioningSettings@2022-01-01-preview' = {
   name: planName
   properties: {
     autoProvision: 'On'

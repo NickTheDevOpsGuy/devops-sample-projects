@@ -1,67 +1,63 @@
-targetScope = 'resourceGroup'
+@description('Environment name (e.g., dev, prod)')
+param environment string
 
+@description('Location for resource deployment')
 param location string = resourceGroup().location
-param environment string = 'dev'
-
-module watcher 'modules/network-watcher.bicep' = {
-  name: 'watcher'
-  params: {
-    location: location
-  }
-}
 
 module network 'modules/network.bicep' = {
   name: 'network'
   params: {
-    location: location
     environment: environment
+    location: location
   }
 }
 
-module monitoring 'modules/monitoring.bicep' = {
-  name: 'monitoring'
+module networkWatcher 'modules/network-watcher.bicep' = {
+  name: 'networkWatcher'
   params: {
     location: location
-    environment: environment
   }
 }
 
 module aks 'modules/aks.bicep' = {
   name: 'aks'
   params: {
-    location: location
-    environment: environment
     aksName: 'aks-${environment}'
     subnetId: network.outputs.subnetId
-    logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
+    location: location
+  }
+}
+
+module monitoring 'modules/monitoring.bicep' = {
+  name: 'monitoring'
+  params: {
+    environment: environment
+    location: location
   }
 }
 
 module grafana 'modules/grafana.bicep' = {
-  name: 'grafanaModule'
+  name: 'grafana'
   params: {
     grafanaName: 'grafana-${environment}'
     location: location
-    resourceGroupName: resourceGroup().name
-    workspaceResourceId: monitoring.outputs.workspaceResourceId
   }
 }
 
 module flux 'modules/flux.bicep' = {
-  name: 'fluxModule'
+  name: 'flux'
   params: {
-    extensionName: 'flux'
-    aksClusterName: aks.outputs.clusterName
-    aksResourceGroup: resourceGroup().name
-    location: location
+    fluxConfigName: 'flux-config'
+    aksResourceId: aks.outputs.clusterName
+    gitRepoUrl: 'https://github.com/NickTheDevOpsGuy/devops-sample-projects'
+    gitBranch: 'develop'
+    gitPath: './aks-monitoring-iac-lab/manifests'
   }
 }
 
 module defender 'modules/defender.bicep' = {
-  name: 'defenderModule'
+  name: 'defender'
   params: {
-    planName: 'defender-${environment}'
-    location: location
-    aksResourceId: aks.outputs.aksResourceId
+    planName: 'default'
   }
 }

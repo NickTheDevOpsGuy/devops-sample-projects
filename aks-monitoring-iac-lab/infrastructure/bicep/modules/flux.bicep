@@ -1,23 +1,43 @@
-@description('Flux extension name')
-param extensionName string = 'flux'
-@description('AKS cluster name')
-param aksClusterName string
-@description('AKS cluster RG')
-param aksResourceGroup string
-@description('Location')
-param location string
+@description('Flux configuration name')
+param fluxConfigName string
 
-resource flux 'Microsoft.KubernetesConfiguration/extensions@2022-11-01' = {
-  name: '${aksClusterName}/${extensionName}'
-  scope: resourceGroup(aksResourceGroup)
-  location: location
+@description('AKS cluster name (not full resource ID)')
+param aksResourceId string
+
+@description('Git repository URL')
+param gitRepoUrl string
+
+@description('Git branch')
+param gitBranch string = 'main'
+
+@description('Path to manifests in the repo')
+param gitPath string = './manifests'
+
+resource aks 'Microsoft.ContainerService/managedClusters@2023-01-02-preview' existing = {
+  name: aksResourceId
+}
+
+resource fluxConfig 'Microsoft.KubernetesConfiguration/fluxConfigurations@2022-03-01' = {
+  name: fluxConfigName
+  scope: aks
   properties: {
-    extensionType: 'microsoft.flux'
-    autoUpgradeMinorVersion: true
-    releaseTrain: 'Stable'
-    scope: {
-      cluster: {
-        releaseNamespace: 'flux-system'
+    scope: 'cluster'
+    namespace: 'flux-system'
+    sourceKind: 'GitRepository'
+    gitRepository: {
+      url: gitRepoUrl
+      repositoryRef: {
+        branch: gitBranch
+      }
+      syncIntervalInSeconds: 60
+      timeoutInSeconds: 600
+    }
+    kustomizations: {
+      fluxSystem: {
+        path: gitPath
+        syncIntervalInSeconds: 60
+        prune: true
+        retryIntervalInSeconds: 600
       }
     }
   }
