@@ -1,3 +1,5 @@
+![AKS Monitoring Deploy](assets/aks-deploy-preview.gif)
+
 # ☁️ AKS Monitoring IaC Lab
 
 This project provisions a production-grade Azure Kubernetes Service (AKS) cluster with full observability and GitOps automation using Bicep and Azure-native tools.
@@ -7,6 +9,15 @@ This project provisions a production-grade Azure Kubernetes Service (AKS) cluste
 ## 🧱 Infrastructure as Code
 
 All infrastructure is defined using modular [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) templates located in the `infrastructure/` folder.
+
+## 📦 Features
+- 🚀 Deploys complete AKS infrastructure with Bicep
+- 📈 Sets up Azure Monitor and Log Analytics
+- 📊 Provisions Azure Managed Grafana
+- 🔁 Integrates GitOps using Flux v2
+- 🛡️ Adds Microsoft Defender for Kubernetes
+- 🧹 Includes deploy & cleanup shell scripts
+-🧪 Ready for multi-environment parameterization
 
 ## 📦 Folder Structure (Relevant Parts)
 
