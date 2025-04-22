@@ -36,3 +36,32 @@ module aks 'modules/aks.bicep' = {
     logAnalyticsWorkspaceId: monitoring.outputs.logAnalyticsWorkspaceId
   }
 }
+
+module grafana 'modules/grafana.bicep' = {
+  name: 'grafanaModule'
+  params: {
+    grafanaName: 'grafana-${environment}'
+    location: location
+    resourceGroupName: resourceGroup().name
+    workspaceResourceId: monitoring.outputs.workspaceResourceId
+  }
+}
+
+module flux 'modules/flux.bicep' = {
+  name: 'fluxModule'
+  params: {
+    extensionName: 'flux'
+    aksClusterName: aks.outputs.clusterName
+    aksResourceGroup: resourceGroup().name
+    location: location
+  }
+}
+
+module defender 'modules/defender.bicep' = {
+  name: 'defenderModule'
+  params: {
+    planName: 'defender-${environment}'
+    location: location
+    aksResourceId: aks.outputs.aksResourceId
+  }
+}

@@ -1,5 +1,12 @@
-🧱 Quick Start: Deploy the VNet + Network Watcher
-This project includes a simplified Bicep deployment that sets up a Virtual Network and Network Watcher inside a single Azure resource group.
+# ☁️ AKS Monitoring IaC Lab
+
+This project provisions a production-grade Azure Kubernetes Service (AKS) cluster with full observability and GitOps automation using Bicep and Azure-native tools.
+
+---
+
+## 🧱 Infrastructure as Code
+
+All infrastructure is defined using modular [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) templates located in the `infrastructure/` folder.
 
 ## 📦 Folder Structure (Relevant Parts)
 
@@ -14,6 +21,9 @@ aks-monitoring-iac-lab/
 │           ├── monitoring.bicep
 │           ├── network-watcher.bicep
 │           └── network.bicep
+│           └── flux.bicep
+│           └── grafana.bicep
+│           └── defender.bicep
 ├── scripts/
 │   ├── deploy.sh
 │   └── cleanup.sh
@@ -69,14 +79,27 @@ Displays usage instructions with emoji prompts 💬
 * ✅ Linked AKS to Log Analytics
 * ✅ Automatic kubeconfig setup after deploy
 
-## 📈 Coming Soon (Next Branches)
+## 📍 Roadmap
+* ✅ Modularized Bicep for AKS, Network, Monitoring
+* ✅ Deployment automation via Bash scripts
+* ✅ manifests/ folder added for GitOps app deployment
+*  🚧 Add modules for Grafana, FluxCD, Defender (in progress on feature/add-grafana-flux-defender-modules)
+*  🔜 Set up GitHub Actions CI to deploy infra + manifests
+*  🔜 Add multi-environment support (dev/stage/prod)
 
-* 🔁 GitOps with FluxCD
-* 📊 Azure Managed Grafana + Dashboards
-* 🔐 Key Vault + OIDC Identity
-* ⚙️ CI/CD via GitHub Actions
-* 🌍 Multi-env separation (dev/stage/prod namespaces)
-*🚀 Helm or Kustomize app deployment
+## 🧠 Learn More
+
+| 🔍 Topic                        | 📚 Documentation / Resource                                                                 |
+|-------------------------------|---------------------------------------------------------------------------------------------|
+| Azure Bicep                   | [What is Bicep?](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) |
+| Azure Kubernetes Service (AKS)| [AKS Overview](https://learn.microsoft.com/en-us/azure/aks/)                                |
+| Azure Monitor                 | [Monitoring AKS with Azure Monitor](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-overview) |
+| Azure Managed Grafana         | [Managed Grafana Overview](https://learn.microsoft.com/en-us/azure/managed-grafana/overview) |
+| FluxCD (GitOps)               | [Flux Documentation](https://fluxcd.io/docs/)                                               |
+| GitOps on Azure               | [Use GitOps with AKS](https://learn.microsoft.com/en-us/azure/azure-arc/kubernetes/tutorial-use-gitops-flux2) |
+| Defender for Containers       | [Defender for Containers Overview](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-containers-introduction) |
+| Azure Network Watcher         | [Azure Network Watcher Docs](https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview) |
+| Infrastructure as Code (IaC)  | [IaC with Azure](https://learn.microsoft.com/en-us/azure/devops/learn/devops-at-microsoft/infrastructure-as-code) |
 
 ## 👑 Part of the NickDoesDevOps Portfolio  
 Follow more projects like this at [github.com/NickTheDevOpsGuy](https://github.com/NickTheDevOpsGuy)
