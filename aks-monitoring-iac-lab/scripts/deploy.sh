@@ -36,11 +36,23 @@ if [[ "$RG" == "-h" || "$RG" == "--help" || -z "$RG" ]]; then
   show_help
 fi
 
+# 🌱 Extract environment from the parameters file using jq
+if ! command -v jq &>/dev/null; then
+  echo "❌ 'jq' is required but not installed. Install it with 'brew install jq' or 'apt install jq'."
+  exit 1
+fi
+
+ENV=$(jq -r '.parameters.environment.value' "$PARAM_FILE")
+AKS_NAME="aks-${ENV}"
+
 # 📋 Summary
+echo ""
 echo "📦 Resource Group: $RG"
 echo "🌍 Location: $LOCATION"
 echo "📁 Bicep Template: $BICEP_FILE"
 echo "📑 Parameters File: $PARAM_FILE"
+echo "🧪 Environment: $ENV"
+echo ""
 
 # 🔍 Check or Create Resource Group
 echo "🔎 Checking if resource group exists..."
@@ -52,6 +64,7 @@ else
 fi
 
 # 🚀 Deploy the modular Bicep templates
+echo ""
 echo "🛠️ Deploying infrastructure modules..."
 az deployment group create \
   --resource-group "$RG" \
@@ -63,11 +76,8 @@ echo "🎉 Deployment complete!"
 echo "🔗 All infrastructure deployed into: $RG"
 
 # 🎯 Try to pull AKS credentials if the cluster exists
-AKS_NAME="aks-${ENV}"
-
 echo ""
 echo "🧠 Checking for AKS cluster: $AKS_NAME in $RG..."
-
 if az aks show --name "$AKS_NAME" --resource-group "$RG" &>/dev/null; then
   echo "🔐 Fetching AKS credentials for '$AKS_NAME'..."
   az aks get-credentials --resource-group "$RG" --name "$AKS_NAME" --overwrite-existing

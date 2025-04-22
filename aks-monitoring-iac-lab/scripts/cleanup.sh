@@ -2,48 +2,50 @@
 set -euo pipefail
 
 # -----------------------------------------------------------------------------
-# 🧹 Cleanup Script — Destroys the specified Azure resource group
+# 🧹 Cleanup Script for AKS Monitoring Lab
+# Deletes all deployed resources, including Grafana
 # -----------------------------------------------------------------------------
 
-function show_help() {
+RG="${1:-}"
+LOCATION="${2:-eastus}"
+
+if [[ -z "$RG" || "$RG" == "-h" || "$RG" == "--help" ]]; then
   echo ""
-  echo "🧹 Destroys a resource group and all associated resources."
+  echo "🧹 Cleanup all resources in a resource group, including Azure Managed Grafana"
   echo ""
   echo "Usage:"
-  echo "  ./cleanup.sh <resource-group>"
+  echo "  ./cleanup.sh <resource-group> [location]"
   echo ""
   echo "Example:"
-  echo "  ./cleanup.sh NickClarkRG"
-  echo ""
-  echo "⚠️  This is permanent! It will delete EVERYTHING in the resource group."
+  echo "  ./cleanup.sh NickClarkRG eastus"
   echo ""
   exit 0
-}
-
-# 🧪 Parse input
-RG="${1:-}"
-
-if [[ "$RG" == "-h" || "$RG" == "--help" || -z "$RG" ]]; then
-  show_help
 fi
 
-# 🔍 Confirm it exists
+echo "🧨 Starting cleanup for resource group: $RG"
+
+# 🎯 Check if RG exists
 if ! az group show --name "$RG" &>/dev/null; then
-  echo "❌ Resource group not found: $RG"
+  echo "❌ Resource group $RG does not exist. Nothing to clean up."
   exit 1
 fi
 
-# ⚠️ Confirmation prompt
-echo "⚠️  You are about to DELETE the entire resource group: $RG"
-read -rp "❓ Are you sure? Type the name of the resource group to confirm: " CONFIRM
+# 🧠 Try to find any Grafana instance by name prefix (e.g., grafana-dev)
+echo "🔎 Checking for Azure Managed Grafana in $RG..."
+grafana_names=$(az grafana list --resource-group "$RG" --query "[].name" -o tsv)
 
-if [[ "$CONFIRM" != "$RG" ]]; then
-  echo "❌ Confirmation failed. Nothing was deleted."
-  exit 1
+if [[ -n "$grafana_names" ]]; then
+  for gname in $grafana_names; do
+    echo "🗑️ Deleting Grafana instance: $gname"
+    az grafana delete --name "$gname" --resource-group "$RG" --yes
+  done
+else
+  echo "✅ No Grafana instances found in $RG."
 fi
 
-# 🚀 Delete it
-echo "🔥 Deleting resource group $RG..."
+# 🧹 Delete the resource group
+echo ""
+echo "🗑️ Deleting entire resource group: $RG..."
 az group delete --name "$RG" --yes --no-wait
 
-echo "✅ Deletion initiated. It may take a few minutes to fully complete."
+echo "🎉 Cleanup started. The resource group and all resources are being deleted."
