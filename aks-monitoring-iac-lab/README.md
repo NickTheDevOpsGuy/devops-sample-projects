@@ -17,7 +17,6 @@ Everything is modularized using [Bicep](https://learn.microsoft.com/en-us/azure/
 - 🚀 Modular AKS deployment with Bicep
 - 📈 Azure Monitor and Log Analytics integration
 - 📊 Azure Managed Grafana with unique naming
-- 🔁 GitOps powered by Flux v2 (per environment)
 - 🛡️ Defender for Kubernetes (optional module)
 - 🧪 Multi-environment support (dev, prod, etc.)
 - 🧹 Clean deploy/cleanup scripts (handles orphaned Grafana too)
