@@ -30,11 +30,6 @@ Everything is modularized using [Bicep](https://learn.microsoft.com/en-us/azure/
 aks-monitoring-iac-lab/
 ├── assets/
 │   └── aks-deploy-preview.gif
-├── flux-bootstrap/
-│   ├── kustomization-dev.yaml
-│   ├── kustomization-prod.yaml
-│   ├── source-dev.yaml
-│   └── source-prod.yaml
 ├── infrastructure/
 │   └── bicep/
 │       ├── main.bicep
@@ -42,7 +37,6 @@ aks-monitoring-iac-lab/
 │       ├── parameters.prod.json
 │       └── modules/
 │           ├── aks.bicep
-│           ├── flux.bicep
 │           ├── grafana.bicep
 │           ├── loganalytics.bicep
 │           ├── monitoring.bicep
