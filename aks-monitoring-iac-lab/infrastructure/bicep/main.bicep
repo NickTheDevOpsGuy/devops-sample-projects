@@ -4,6 +4,16 @@ param environment string
 @description('Location for resource deployment')
 param location string = resourceGroup().location
 
+var shortHash = substring(uniqueString(resourceGroup().id), 0, 6)
+
+module loganalytics 'modules/loganalytics.bicep' = {
+  name: 'logAnalytics'
+  params: {
+    workspaceName: 'log-${environment}'
+    location: location
+  }
+}
+
 module network 'modules/network.bicep' = {
   name: 'network'
   params: {
@@ -33,31 +43,29 @@ module monitoring 'modules/monitoring.bicep' = {
   params: {
     environment: environment
     location: location
+    workspaceResourceId: loganalytics.outputs.workspaceResourceId
+    workspaceName: loganalytics.outputs.workspaceName
   }
 }
 
 module grafana 'modules/grafana.bicep' = {
   name: 'grafana'
   params: {
-    grafanaName: 'grafana-${environment}'
+    grafanaName: 'grafana-${environment}-${shortHash}'
     location: location
+    resourceGroupName: resourceGroup().name
+    environment: environment
+    workspaceResourceId: loganalytics.outputs.workspaceResourceId
   }
 }
 
 module flux 'modules/flux.bicep' = {
   name: 'flux'
   params: {
-    fluxConfigName: 'flux-config'
+    fluxConfigName: 'flux-${environment}'
     aksResourceId: aks.outputs.clusterName
     gitRepoUrl: 'https://github.com/NickTheDevOpsGuy/devops-sample-projects'
     gitBranch: 'develop'
     gitPath: './aks-monitoring-iac-lab/manifests'
-  }
-}
-
-module defender 'modules/defender.bicep' = {
-  name: 'defender'
-  params: {
-    planName: 'default'
   }
 }

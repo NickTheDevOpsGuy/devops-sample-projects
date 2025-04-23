@@ -1,15 +1,18 @@
-@description('Plan name for Defender')
-param planName string = 'default'
+@description('Location (not required for these resources but passed for consistency)')
+param location string
 
-resource defender 'Microsoft.Security/pricings@2022-01-01-preview' = {
-  name: 'ContainerRegistry'
+@description('The name of the Defender plan to enable')
+param planName string
+
+resource defender 'Microsoft.Security/pricings@2023-01-01' = {
+  name: planName
   properties: {
     pricingTier: 'Standard'
   }
 }
 
-resource autoProvision 'Microsoft.Security/autoProvisioningSettings@2022-01-01-preview' = {
-  name: planName
+resource autoProvision 'Microsoft.Security/autoProvisioningSettings@2023-01-01' = {
+  name: 'default'
   properties: {
     autoProvision: 'On'
   }

@@ -1,17 +1,21 @@
-param location string
+@description('Environment name')
 param environment string
-param workspaceName string = 'log-${environment}'
 
-resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
-  name: workspaceName
+@description('Location for deployment')
+param location string
+
+@description('Log Analytics workspace resource ID')
+param workspaceResourceId string
+
+@description('Log Analytics workspace name')
+param workspaceName string
+
+resource containerInsights 'Microsoft.Insights/components@2020-02-02' = {
+  name: 'insights-${environment}'
   location: location
+  kind: 'other'
   properties: {
-    retentionInDays: 30
-    sku: {
-      name: 'PerGB2018'
-    }
+    Application_Type: 'web'
+    WorkspaceResourceId: workspaceResourceId
   }
 }
-
-output logAnalyticsWorkspaceId string = logAnalytics.id
-output logAnalyticsWorkspaceName string = logAnalytics.name

@@ -33,7 +33,7 @@ resource fluxConfig 'Microsoft.KubernetesConfiguration/fluxConfigurations@2022-0
       timeoutInSeconds: 600
     }
     kustomizations: {
-      fluxSystem: {
+      fluxconfig: {
         path: gitPath
         syncIntervalInSeconds: 60
         prune: true

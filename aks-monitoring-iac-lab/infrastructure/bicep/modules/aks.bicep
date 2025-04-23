@@ -1,33 +1,46 @@
+@description('The name of the AKS cluster')
 param aksName string
+
+@description('Location for the AKS cluster')
 param location string
+
+@description('Subnet resource ID for AKS node pool')
 param subnetId string
 
-resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-01-02-preview' = {
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-05-01' = {
   name: aksName
   location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
-    dnsPrefix: aksName
-    enableRBAC: true
+    dnsPrefix: '${aksName}-dns'
+    kubernetesVersion: '' // Let Azure pick the latest GA version
     agentPoolProfiles: [
       {
         name: 'nodepool1'
-        count: 2
-        vmSize: 'Standard_DS2_v2'
+        count: 1
+        vmSize: 'Standard_B2ms'
         osType: 'Linux'
-        type: 'VirtualMachineScaleSets'
         mode: 'System'
-        vnetSubnetID: subnetId
+        type: 'VirtualMachineScaleSets'
+        vnetSubnetId: subnetId
       }
     ]
     networkProfile: {
       networkPlugin: 'azure'
-      networkPolicy: 'azure'
-      serviceCidr: '10.0.0.0/16'
-      dnsServiceIP: '10.0.0.10'
+      loadBalancerSku: 'standard'
+      serviceCidr: '10.240.0.0/16'
+      dnsServiceIP: '10.240.0.10'
       dockerBridgeCidr: '172.17.0.1/16'
+    }
+    enableRBAC: true
+    sku: {
+      name: 'Basic'
+      tier: 'Free'
     }
   }
 }
 
 output clusterName string = aksCluster.name
-output aksResourceId string = aksCluster.id
+output clusterResourceId string = aksCluster.id

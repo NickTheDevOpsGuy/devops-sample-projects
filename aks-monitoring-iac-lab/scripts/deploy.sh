@@ -2,56 +2,53 @@
 set -euo pipefail
 
 # -----------------------------------------------------------------------------
-# 🧱 Modular Bicep Deployment Script
-# Deploys infrastructure using environment-specific parameter file
+# ☁️ Modular AKS Monitoring IaC Deployment Script
 # -----------------------------------------------------------------------------
 
-# 📦 Usage Help
 function show_help() {
   echo ""
-  echo "🚀 Deploy modularized infrastructure using Bicep and parameters.dev.json"
+  echo "🚀 Deploy modularized AKS monitoring lab using Bicep and GitOps"
   echo ""
   echo "Usage:"
-  echo "  ./deploy.sh <resource-group> [location]"
-  echo ""
-  echo "Example:"
-  echo "  ./deploy.sh NickClarkRG eastus"
+  echo "  ./deploy.sh <resource-group> [environment] [location]"
   echo ""
   echo "Arguments:"
-  echo "  <resource-group>   Required. Target Azure resource group."
-  echo "  [location]         Optional. Azure region (default: eastus)."
+  echo "  <resource-group>   Required. Azure resource group name."
+  echo "  [environment]      Optional. dev or prod. Default: dev"
+  echo "  [location]         Optional. Azure region. Default: eastus"
   echo ""
   exit 0
 }
 
 # 🧪 Parse Inputs
 RG="${1:-}"
-LOCATION="${2:-eastus}"
+ENV="${2:-dev}"
+LOCATION="${3:-eastus}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 BICEP_FILE="${ROOT_DIR}/infrastructure/bicep/main.bicep"
-PARAM_FILE="${ROOT_DIR}/infrastructure/bicep/parameters.dev.json"
+PARAM_FILE="${ROOT_DIR}/infrastructure/bicep/parameters.${ENV}.json"
+FLUX_BOOTSTRAP_DIR="${ROOT_DIR}/aks-monitoring-iac-lab/flux-bootstrap"
+FLUX_SOURCE="${FLUX_BOOTSTRAP_DIR}/source-${ENV}.yaml"
+FLUX_KUSTOMIZATION="${FLUX_BOOTSTRAP_DIR}/kustomization-${ENV}.yaml"
+DEPLOYMENT_NAME="main"
 
 if [[ "$RG" == "-h" || "$RG" == "--help" || -z "$RG" ]]; then
   show_help
 fi
 
-# 🌱 Extract environment from the parameters file using jq
-if ! command -v jq &>/dev/null; then
-  echo "❌ 'jq' is required but not installed. Install it with 'brew install jq' or 'apt install jq'."
+if [[ ! -f "$PARAM_FILE" ]]; then
+  echo "❌ Parameter file not found: $PARAM_FILE"
   exit 1
 fi
-
-ENV=$(jq -r '.parameters.environment.value' "$PARAM_FILE")
-AKS_NAME="aks-${ENV}"
 
 # 📋 Summary
 echo ""
 echo "📦 Resource Group: $RG"
 echo "🌍 Location: $LOCATION"
+echo "🧪 Environment: $ENV"
 echo "📁 Bicep Template: $BICEP_FILE"
 echo "📑 Parameters File: $PARAM_FILE"
-echo "🧪 Environment: $ENV"
 echo ""
 
 # 🔍 Check or Create Resource Group
@@ -63,25 +60,68 @@ else
   echo "✅ Resource group already exists."
 fi
 
-# 🚀 Deploy the modular Bicep templates
+# 🚀 Deploy infrastructure
 echo ""
-echo "🛠️ Deploying infrastructure modules..."
+echo "🛠️ Deploying infrastructure with Bicep..."
+start_time=$(date +%s)
 az deployment group create \
+  --name "$DEPLOYMENT_NAME" \
   --resource-group "$RG" \
   --template-file "$BICEP_FILE" \
   --parameters "@$PARAM_FILE"
 
+# 📊 Monitor deployment operations
 echo ""
-echo "🎉 Deployment complete!"
-echo "🔗 All infrastructure deployed into: $RG"
+echo "📊 Watching real-time deployment progress..."
 
-# 🎯 Try to pull AKS credentials if the cluster exists
+while true; do
+  operations=$(az deployment operation group list \
+    --resource-group "$RG" \
+    --name "$DEPLOYMENT_NAME" \
+    --query "[].{Resource:properties.targetResource.resourceName, Type:properties.targetResource.resourceType, Status:properties.provisioningState, Operation:properties.provisioningOperation}" \
+    --output table)
+
+  clear
+  echo "🛠️  Deployment: $DEPLOYMENT_NAME"
+  echo "⏱️  Time: $(date)"
+  echo "$operations"
+
+  if ! echo "$operations" | grep -q "Running"; then
+    echo ""
+    echo "✅ Deployment operations completed!"
+    break
+  fi
+
+  elapsed=$(( $(date +%s) - start_time ))
+  if [[ $elapsed -gt 600 ]]; then
+    echo "⚠️ Deployment is taking longer than 10 minutes..."
+  fi
+
+  sleep 10
+done
+
+# 🌀 GitOps: Apply Flux configs
+if [[ -f "$FLUX_SOURCE" && -f "$FLUX_KUSTOMIZATION" ]]; then
+  echo ""
+  echo "🔁 Applying Flux GitRepository and Kustomization for $ENV..."
+  kubectl apply -f "$FLUX_SOURCE"
+  kubectl apply -f "$FLUX_KUSTOMIZATION"
+  echo "✅ Flux bootstrapped for '$ENV'"
+else
+  echo "⚠️  No Flux config found for '$ENV' — skipping GitOps bootstrap"
+fi
+
+# 🧠 Try to pull AKS credentials
+AKS_NAME="aks-${ENV}"
 echo ""
 echo "🧠 Checking for AKS cluster: $AKS_NAME in $RG..."
 if az aks show --name "$AKS_NAME" --resource-group "$RG" &>/dev/null; then
-  echo "🔐 Fetching AKS credentials for '$AKS_NAME'..."
+  echo "🔐 Fetching AKS credentials..."
   az aks get-credentials --resource-group "$RG" --name "$AKS_NAME" --overwrite-existing
-  echo "✅ AKS kubeconfig updated. You can now run: kubectl get nodes"
+  echo "✅ Kubeconfig updated. Try: kubectl get nodes"
 else
   echo "⚠️  AKS cluster '$AKS_NAME' not found in $RG. Skipping kubeconfig setup."
 fi
+
+echo ""
+echo "🎉 Done!"
