@@ -58,14 +58,3 @@ module grafana 'modules/grafana.bicep' = {
     workspaceResourceId: loganalytics.outputs.workspaceResourceId
   }
 }
-
-module flux 'modules/flux.bicep' = {
-  name: 'flux'
-  params: {
-    fluxConfigName: 'flux-${environment}'
-    aksResourceId: aks.outputs.clusterName
-    gitRepoUrl: 'https://github.com/NickTheDevOpsGuy/devops-sample-projects'
-    gitBranch: 'develop'
-    gitPath: './aks-monitoring-iac-lab/manifests'
-  }
-}
