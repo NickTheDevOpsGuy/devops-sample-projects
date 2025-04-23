@@ -79,7 +79,6 @@ This will:
 - 🔧 Create the resource group if it doesn’t exist
 - 🧱 Deploy the full infrastructure using Bicep
 - 🔍 Provision Azure Monitor, Network Watcher, and AKS
-- 🔁 Bootstrap GitOps with Flux
 - 🔐 Configure your kubeconfig automatically
 
 ## 🆘 Help
@@ -90,7 +89,7 @@ This will:
 
 Displays usage instructions with emoji prompts 💬
 
----
+---ƒ
 
 
 ## 🧹 How to Clean Up
