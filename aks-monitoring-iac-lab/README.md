@@ -2,104 +2,142 @@
 
 # ☁️ AKS Monitoring IaC Lab
 
-This project provisions a production-grade Azure Kubernetes Service (AKS) cluster with full observability and GitOps automation using Bicep and Azure-native tools.
+This project provisions a **production-grade Azure Kubernetes Service (AKS)** cluster with **full observability** and **GitOps automation**, powered by **Bicep** and Azure-native tooling.
 
 ---
 
 ## 🧱 Infrastructure as Code
 
-All infrastructure is defined using modular [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) templates located in the `infrastructure/` folder.
+Everything is modularized using [Bicep](https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview), located in the `infrastructure/` folder. This is IaC done right.
+
+---
 
 ## 📦 Features
-- 🚀 Deploys complete AKS infrastructure with Bicep
-- 📈 Sets up Azure Monitor and Log Analytics
-- 📊 Provisions Azure Managed Grafana
-- 🔁 Integrates GitOps using Flux v2
-- 🛡️ Adds Microsoft Defender for Kubernetes
-- 🧹 Includes deploy & cleanup shell scripts
--🧪 Ready for multi-environment parameterization
 
-## 📦 Folder Structure (Relevant Parts)
+- 🚀 Modular AKS deployment with Bicep
+- 📈 Azure Monitor and Log Analytics integration
+- 📊 Azure Managed Grafana with unique naming
+- 🔁 GitOps powered by Flux v2 (per environment)
+- 🛡️ Defender for Kubernetes (optional module)
+- 🧪 Multi-environment support (dev, prod, etc.)
+- 🧹 Clean deploy/cleanup scripts (handles orphaned Grafana too)
 
-```graphql
+---
+
+## 📁 Folder Structure (Relevant Parts)
+
+```plaintext
 aks-monitoring-iac-lab/
-├── .github/
-│   └── workflow/
-│   └── validate.yml
+├── assets/
+│   └── aks-deploy-preview.gif
+├── flux-bootstrap/
+│   ├── kustomization-dev.yaml
+│   ├── kustomization-prod.yaml
+│   ├── source-dev.yaml
+│   └── source-prod.yaml
 ├── infrastructure/
 │   └── bicep/
 │       ├── main.bicep
 │       ├── parameters.dev.json
+│       ├── parameters.prod.json
 │       └── modules/
 │           ├── aks.bicep
+│           ├── flux.bicep
+│           ├── grafana.bicep
+│           ├── loganalytics.bicep
 │           ├── monitoring.bicep
-│           ├── network-watcher.bicep
-│           └── network.bicep
-│           └── flux.bicep
-│           └── grafana.bicep
-│           └── defender.bicep
+│           ├── network.bicep
+│           └── network-watcher.bicep
+├── manifests/
+│   ├── dev/
+│   │   └── nginx/
+│   │       ├── deployment.yaml
+│   │       ├── namespace.yaml
+│   │       ├── service.yaml
+│   │       └── kustomization.yaml
+│   └── prod/
+│       └── nginx/
+│           ├── deployment.yaml
+│           ├── namespace.yaml
+│           ├── service.yaml
+│           └── kustomization.yaml
 ├── scripts/
-│   ├── deploy.sh
-│   └── cleanup.sh
-├── .gitignore
-├── LICENSE
-├── README.md
-
+│   ├── cleanup.sh
+│   └── deploy.sh
 ```
+
+---
 
 ## 🚀 Deploy It
 
-```~~bash~~
-./deploy.sh <resource-group-name> [location]
-```
-
-Example:
-
 ```bash
-./deploy.sh NickClarkRG eastus
+./scripts/deploy.sh NickClarkRG dev eastus
 ```
 
 This will:
 
-* ✅ Create the resource group (if it doesn’t exist)
-* 🧱 Deploy a VNet and subnet
-* 🔍 Deploy Azure Network Watcher into the same resource group
-* 🧠 Avoid auto-created NetworkWatcherRG_* resource groups
-
-## 🧹 How to Clean Up
-``bash
-./cleanup.sh NickClarkRG
-```
-Prompts you to confirm deletion before destroying everything inside the resource group.
+- 🔧 Create the resource group if it doesn’t exist
+- 🧱 Deploy the full infrastructure using Bicep
+- 🔍 Provision Azure Monitor, Network Watcher, and AKS
+- 🔁 Bootstrap GitOps with Flux
+- 🔐 Configure your kubeconfig automatically
 
 ## 🆘 Help
 
 ```bash
-./deploy.sh -h
+./scripts/deploy.sh -h
 ```
+
 Displays usage instructions with emoji prompts 💬
+
+---
+
+
+## 🧹 How to Clean Up
+```bash
+./scripts/cleanup.sh NickClarkRG
+```
+What it does:
+- ✅ Deletes the specified resource group (if it exists)
+- 🔎 Searches your subscription for orphaned Grafana instances and deletes them
+
+---
+
 
 ## 📥 Prerequisites
 
-* Logged in with Azure CLI: az login
-* Subscription access with permission to deploy resources
-* Azure CLI version 2.30+ (for Bicep support)
+- Azure CLI >= 2.30
+- Logged in with az login
+- Active subscription with resource deployment permissions
+- kubectl installed
+
+---
+
 
 ## 🧠 Current Features
 
-* ✅ Modular Bicep architecture
-* ✅ Per-environment parameter support (dev, prod, etc.)
-* ✅ Clean deploy/cleanup CLI scripts with emoji prompts
-* ✅ Linked AKS to Log Analytics
-* ✅ Automatic kubeconfig setup after deploy
+- 🚀 Deploys AKS cluster with modular Bicep
+- 📈 Azure Monitor + Log Analytics integration
+- 📊 Azure Managed Grafana (with unique name support)
+- 🔁 GitOps via FluxCD (for dev/prod)
+- 🛡️ Optional Defender for Containers (can be excluded)
+- 🧹 Smart deploy and cleanup scripts (even finds orphaned Grafana)
+- 🧪 Environment support for `dev`, `prod`, etc.
+
+---
+
 
 ## 📍 Roadmap
-* ✅ Modularized Bicep for AKS, Network, Monitoring
-* ✅ Deployment automation via Bash scripts
-* ✅ manifests/ folder added for GitOps app deployment
-*  🚧 Add modules for Grafana, FluxCD, Defender (in progress on feature/add-grafana-flux-defender-modules)
-*  🔜 Set up GitHub Actions CI to deploy infra + manifests
-*  🔜 Add multi-environment support (dev/stage/prod)
+- ✅ Modularize core resources with Bicep
+- ✅ Add loganalytics.bicep and grafana.bicep modules
+- ✅ Unique Grafana workspace naming using hash
+- ✅ Smart cleanup for RG + Grafana anywhere
+- 🔁 GitOps auto-bootstrapping with Flux
+- 🔜 GitHub Actions pipeline for CI/CD
+- 🔜 Alert rules + dashboards via Grafana provisioning
+
+---
+
 
 ## 🧠 Learn More
 
@@ -114,6 +152,8 @@ Displays usage instructions with emoji prompts 💬
 | Defender for Containers       | [Defender for Containers Overview](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-containers-introduction) |
 | Azure Network Watcher         | [Azure Network Watcher Docs](https://learn.microsoft.com/en-us/azure/network-watcher/network-watcher-monitoring-overview) |
 | Infrastructure as Code (IaC)  | [IaC with Azure](https://learn.microsoft.com/en-us/azure/devops/learn/devops-at-microsoft/infrastructure-as-code) |
+
+---
 
 ## 👑 Part of the NickDoesDevOps Portfolio  
 Follow more projects like this at [github.com/NickTheDevOpsGuy](https://github.com/NickTheDevOpsGuy)
