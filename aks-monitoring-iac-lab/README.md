@@ -83,7 +83,7 @@ This will:
 
 Displays usage instructions with emoji prompts 💬
 
----ƒ
+---
 
 
 ## 🧹 How to Clean Up
