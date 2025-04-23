@@ -62,7 +62,7 @@ fi
 
 # 🚀 Deploy infrastructure
 echo ""
-echo "🛠️ Deploying infrastructure with Bicep..."
+echo "🛠️  [1/3] Deploying infrastructure with Bicep..."
 start_time=$(date +%s)
 az deployment group create \
   --name "$DEPLOYMENT_NAME" \
@@ -72,7 +72,7 @@ az deployment group create \
 
 # 📊 Monitor deployment operations
 echo ""
-echo "📊 Watching real-time deployment progress..."
+echo "📊 [2/3] Watching real-time deployment progress..."
 
 while true; do
   operations=$(az deployment operation group list \
@@ -101,9 +101,10 @@ while true; do
 done
 
 # 🌀 GitOps: Apply Flux configs
+echo ""
+echo "🔁 [3/3] Bootstrapping Flux for GitOps..."
 if [[ -f "$FLUX_SOURCE" && -f "$FLUX_KUSTOMIZATION" ]]; then
-  echo ""
-  echo "🔁 Applying Flux GitRepository and Kustomization for $ENV..."
+  echo "📁 Applying $FLUX_SOURCE and $FLUX_KUSTOMIZATION..."
   kubectl apply -f "$FLUX_SOURCE"
   kubectl apply -f "$FLUX_KUSTOMIZATION"
   echo "✅ Flux bootstrapped for '$ENV'"
@@ -114,9 +115,9 @@ fi
 # 🧠 Try to pull AKS credentials
 AKS_NAME="aks-${ENV}"
 echo ""
-echo "🧠 Checking for AKS cluster: $AKS_NAME in $RG..."
+echo "🔐 Getting AKS credentials for: $AKS_NAME in $RG..."
 if az aks show --name "$AKS_NAME" --resource-group "$RG" &>/dev/null; then
-  echo "🔐 Fetching AKS credentials..."
+  echo "🔐 Fetching kubeconfig..."
   az aks get-credentials --resource-group "$RG" --name "$AKS_NAME" --overwrite-existing
   echo "✅ Kubeconfig updated. Try: kubectl get nodes"
 else
@@ -124,4 +125,4 @@ else
 fi
 
 echo ""
-echo "🎉 Done!"
+echo "🎉 All done. Go dominate your cloud!"
