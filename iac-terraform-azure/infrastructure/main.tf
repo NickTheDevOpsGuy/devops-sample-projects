@@ -1,19 +1,9 @@
-module "network" {
-  source     = "../modules/network"
-  vnet_name  = var.vnet_name
-  address_space = var.address_space
-  location   = var.location
-  resource_group_name = var.resource_group_name
-}
+resource "azurerm_storage_account" "this" {
+  name                     = var.storage_account_name
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
+  account_tier             = var.account_tier
+  account_replication_type = var.replication_type
 
-module "aks" {
-  source     = "../modules/aks"
-  location   = var.location
-  resource_group_name = var.resource_group_name
-}
-
-module "storage" {
-  source     = "../modules/storage"
-  location   = var.location
-  resource_group_name = var.resource_group_name
+  tags = local.common_tags
 }

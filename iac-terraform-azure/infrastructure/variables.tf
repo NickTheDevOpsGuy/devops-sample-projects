@@ -1,21 +1,26 @@
+variable "storage_account_name" {
+  description = "Storage account name"
+  type        = string
+}
+
 variable "location" {
   description = "Azure region"
   type        = string
-  default     = "East US"
 }
 
 variable "resource_group_name" {
-  description = "Azure Resource Group"
+  description = "Resource Group name"
   type        = string
-  default     = "NickClarkRG"
 }
 
-variable "vnet_name" {
+variable "account_tier" {
+  description = "Storage Account tier (Standard/Premium)"
   type        = string
-  default     = "main-vnet"
+  default     = "Standard"
 }
 
-variable "address_space" {
-  type        = list(string)
-  default     = ["10.0.0.0/16"]
+variable "replication_type" {
+  description = "Replication type (LRS, GRS, ZRS)"
+  type        = string
+  default     = "LRS"
 }
