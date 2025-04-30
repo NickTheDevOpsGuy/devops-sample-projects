@@ -1,0 +1,73 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "type": "dashboard",
+          "name": "Annotations & Alerts",
+          "enabled": true
+        }
+      ]
+    },
+    "title": "Node Metrics Dashboard",
+    "uid": "node-metrics",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "CPU Usage (1m rate)",
+        "targets": [
+          {
+            "expr": "instance:node_cpu_utilisation:rate1m",
+            "legendFormat": "{{instance}}",
+            "refId": "A"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+      },
+      {
+        "type": "graph",
+        "title": "Memory Usage Ratio",
+        "targets": [
+          {
+            "expr": "instance:node_memory_utilisation:ratio",
+            "legendFormat": "{{instance}}",
+            "refId": "B"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+      },
+      {
+        "type": "graph",
+        "title": "Disk Usage % (root)",
+        "targets": [
+          {
+            "expr": "100 - (node_filesystem_free_bytes{mountpoint=\"/\"} * 100 / node_filesystem_size_bytes{mountpoint=\"/\"})",
+            "legendFormat": "{{instance}}",
+            "refId": "C"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 }
+      },
+      {
+        "type": "graph",
+        "title": "Network I/O (bytes per second)",
+        "targets": [
+          {
+            "expr": "rate(node_network_receive_bytes_total[1m])",
+            "legendFormat": "{{instance}} - in",
+            "refId": "D"
+          },
+          {
+            "expr": "rate(node_network_transmit_bytes_total[1m])",
+            "legendFormat": "{{instance}} - out",
+            "refId": "E"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 8 }
+      }
+    ],
+    "schemaVersion": 30,
+    "version": 1,
+    "timezone": "browser",
+    "refresh": "10s"
+  }
