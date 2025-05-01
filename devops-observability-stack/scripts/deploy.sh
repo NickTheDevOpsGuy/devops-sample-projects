@@ -93,6 +93,12 @@ else
   echo "⚠️ Grafana deployment not found."
 fi
 
+echo "⏳ Waiting for Grafana pod to be ready..."
+kubectl wait --for=condition=Ready pod -l app.kubernetes.io/name=grafana -n monitoring --timeout=90s || {
+  echo "⚠️ Timed out waiting for Grafana pod readiness. Skipping port-forward."
+  exit 1
+}
+
 echo "🔁 Attempting port-forward to Grafana..."
 GRAFANA_SVC=$(kubectl get svc -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath="{.items[0].metadata.name}" 2>/dev/null || true)
 

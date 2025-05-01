@@ -1,0 +1,23 @@
+{
+    "uid": "k8s-logs",
+    "title": "Kubernetes Logs",
+    "timezone": "browser",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "10s",
+    "panels": [
+      {
+        "type": "logs",
+        "title": "All Container Logs",
+        "id": 1,
+        "gridPos": { "x": 0, "y": 0, "w": 24, "h": 10 },
+        "datasource": "Loki",
+        "targets": [
+          {
+            "expr": "{namespace=\"default\"}",
+            "refId": "A"
+          }
+        ]
+      }
+    ]
+  }

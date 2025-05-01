@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pod-resource-dashboard
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  pod-resource-dashboard.json: |
+    <PASTE ENTIRE JSON FROM ABOVE HERE INDENTED>

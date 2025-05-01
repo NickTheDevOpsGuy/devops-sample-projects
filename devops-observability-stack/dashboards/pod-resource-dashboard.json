@@ -1,0 +1,38 @@
+{
+    "uid": "pod-resource-usage",
+    "title": "Pod Resource Usage",
+    "timezone": "browser",
+    "schemaVersion": 30,
+    "version": 1,
+    "refresh": "10s",
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "Pod CPU Usage",
+        "id": 1,
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "sum(rate(container_cpu_usage_seconds_total{image!='',container!='POD'}[5m])) by (pod)",
+            "legendFormat": "{{pod}}",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "type": "timeseries",
+        "title": "Pod Memory Usage",
+        "id": 2,
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 },
+        "datasource": "Prometheus",
+        "targets": [
+          {
+            "expr": "sum(container_memory_usage_bytes{image!='',container!='POD'}) by (pod)",
+            "legendFormat": "{{pod}}",
+            "refId": "A"
+          }
+        ]
+      }
+    ]
+  }
