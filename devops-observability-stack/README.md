@@ -16,11 +16,70 @@ Supports deployment to:
 
 ---
 
+## 📡 Sample App: Node Metrics Demo
+
+This repo includes a sample Node.js application that exposes:
+
+- `/` route for log testing (Loki)
+- `/metrics` for Prometheus metric scraping via `prom-client`
+
+It’s deployed into Kubernetes with Prometheus scrape annotations and used to populate dashboards automatically.
+
+📁 See [`apps/node-metrics-demo/`](./apps/node-metrics-demo) for details.
+
+---
+
+## 📊 Dashboards Preview
+
+Grafana auto-loads the following dashboards from ConfigMaps:
+
+- ✅ Sample Node Metrics
+- ✅ Pod Resource Usage
+- ✅ Kubernetes Logs
+
+All dashboards are defined in the `dashboards/` folder and automatically picked up by Grafana’s sidecar.
+
+*(You could optionally include a screenshot or animated GIF here if you want to really show it off.)*
+
+---
+
+## ⚙️ CI/CD
+
+This project includes GitHub Actions workflows for:
+
+- ✅ Linting dashboard JSON files
+- ✅ Deploying to AKS using `deploy.sh`
+
+Workflows are located in `.github/workflows/` and run automatically on PRs and merges to `main`.
+
+### 🔐 GitHub Secrets Required
+
+| Secret Name         | Description                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| `AZURE_CREDENTIALS` | JSON string for Azure service principal (`az login` via GitHub Actions)     |
+| `RESOURCE_GROUP`    | Azure Resource Group name for AKS (e.g. `NickClarkRG`)                      |
+
+
+---
+
 ## 📁 Project Structure
 
 ```plaintext
 devops-observability-stack/
+├── .github/
+│   ├── workflow/
+│   │   └── deploy-aks.yaml
+│   │   └── lint-dashboards.yaml
+├── apps/
+│   ├── node-metrics-demo/
+│   │   └── deployment.yaml
+│   │   └── Dockerfile
+│   │   └── index.js
+│   │   └── package.json
+│   │   └── README.md
 ├── dashboards/
+│   └── k8s-logs-dashboard.json
+│   └── pod-resource-dashboard.json
 │   └── sample-node-dashboard.json
 ├── environments/
 │   ├── aks/
@@ -28,12 +87,14 @@ devops-observability-stack/
 │   └── minikube/
 │       └── values-minikube.yaml
 ├── manifests/
-│   ├── prometheus/
-│   │   └── prometheus-service-monitor.yaml
 │   ├── grafana/
+│   │   └── k8s-logs-dashboard-configmap.yaml
+│   │   └── pod-resource-dashboard-configmap.yaml
 │   │   └── custom-dashboard-configmap.yaml
 │   └── loki/
 │       └── loki-pvc.yaml
+│   ├── prometheus/
+│   │   └── prometheus-service-monitor.yaml
 ├── scripts/
 │   ├── deploy.sh
 │   └── cleanup.sh

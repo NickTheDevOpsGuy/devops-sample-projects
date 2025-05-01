@@ -33,6 +33,10 @@ helm repo add prometheus-community https://prometheus-community.github.io/helm-c
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
+# Ensure monitoring namespace exists before any installs or apply
+echo "📦 Ensuring 'monitoring' namespace exists..."
+kubectl get ns monitoring >/dev/null 2>&1 || kubectl create ns monitoring
+
 if [[ "$ENV" == "minikube" ]]; then
   kubectl config use-context minikube
 
@@ -76,13 +80,14 @@ else
   exit 1
 fi
 
-echo "📊 Applying dashboard ConfigMap..."
-kubectl get ns monitoring >/dev/null 2>&1 || kubectl create ns monitoring
-
-if [[ -f manifests/grafana/sample-node-dashboard-configmap.yaml ]]; then
-  kubectl apply -f manifests/grafana/sample-node-dashboard-configmap.yaml
+echo "📊 Applying all Grafana dashboard ConfigMaps..."
+if compgen -G "manifests/grafana/*-dashboard-configmap.yaml" > /dev/null; then
+  for file in manifests/grafana/*-dashboard-configmap.yaml; do
+    echo "🔁 Applying $file"
+    kubectl apply -f "$file"
+  done
 else
-  echo "⚠️ Dashboard file not found."
+  echo "⚠️ No dashboard configmaps found in manifests/grafana/"
 fi
 
 echo "🔄 Restarting Grafana..."

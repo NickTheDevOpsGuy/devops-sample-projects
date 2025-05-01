@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-metrics-demo
+  labels:
+    app: node-metrics-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: node-metrics-demo
+  template:
+    metadata:
+      labels:
+        app: node-metrics-demo
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: app
+          image: ghcr.io/nickthedevopsguy/node-metrics-demo:latest
+          ports:
+            - containerPort: 3000
