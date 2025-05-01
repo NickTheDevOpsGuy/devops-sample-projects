@@ -7,6 +7,16 @@ loki:
       retention_deletes_enabled: true
       retention_period: 168h
 
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: admin
+
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+
 prometheus:
   prometheusSpec:
     retention: 6h

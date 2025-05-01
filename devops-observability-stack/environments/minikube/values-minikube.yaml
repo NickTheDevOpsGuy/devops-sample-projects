@@ -1,4 +1,4 @@
-# AKS Values for kube-prometheus-stack + Loki
+# minikube Values for kube-prometheus-stack + Loki
 
 loki:
   enabled: true
@@ -6,6 +6,16 @@ loki:
     table_manager:
       retention_deletes_enabled: true
       retention_period: 168h
+
+grafana:
+  enabled: true
+  adminUser: admin
+  adminPassword: admin
+
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
 
 prometheus:
   prometheusSpec:

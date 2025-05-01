@@ -1,25 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# -----------------------------------------------------------------------------
-# 🚀 Deploy DevOps Observability Stack (Minikube or AKS)
-# -----------------------------------------------------------------------------
-
 function usage() {
   echo ""
-  echo "🚀 Deploy the DevOps Observability Stack with Prometheus, Loki, and Grafana"
-  echo ""
-  echo "Usage:"
-  echo "  ./deploy.sh --env <minikube|aks> [--resource-group <name>] [--help]"
-  echo ""
-  echo "Options:"
-  echo "  --env                Target environment: 'minikube' or 'aks' (required)"
-  echo "  --resource-group     Azure Resource Group (required for AKS)"
-  echo "  --help               Show this help message"
-  echo ""
-  echo "Examples:"
-  echo "  ./deploy.sh --env minikube"
-  echo "  ./deploy.sh --env aks --resource-group MyResourceGroup"
+  echo "🚀 Deploy the DevOps Observability Stack"
+  echo "Usage: ./deploy.sh --env <minikube|aks> [--resource-group <name>] [--help]"
   echo ""
   exit 0
 }
@@ -27,24 +12,12 @@ function usage() {
 ENV=""
 RESOURCE_GROUP=""
 
-# Parse arguments
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --env)
-      ENV="$2"
-      shift 2
-      ;;
-    --resource-group)
-      RESOURCE_GROUP="$2"
-      shift 2
-      ;;
-    --help|-h)
-      usage
-      ;;
-    *)
-      echo "❌ Unknown option: $1"
-      usage
-      ;;
+    --env) ENV="$2"; shift 2 ;;
+    --resource-group) RESOURCE_GROUP="$2"; shift 2 ;;
+    --help|-h) usage ;;
+    *) echo "❌ Unknown option: $1"; usage ;;
   esac
 done
 
@@ -55,54 +28,84 @@ fi
 
 echo "🌍 Target environment: $ENV"
 
-# -----------------------------------------------------------------------------
-# Helm Chart Installation
-# -----------------------------------------------------------------------------
-
 echo "📦 Adding Helm repos..."
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
 if [[ "$ENV" == "minikube" ]]; then
-  echo "🔧 Setting up Minikube environment..."
   kubectl config use-context minikube
 
-  echo "📦 Installing Prometheus stack (Minikube)..."
+  echo "📦 Installing Prometheus stack..."
   helm upgrade --install kube-prometheus prometheus-community/kube-prometheus-stack \
-    -f environments/minikube/values-minikube.yaml --namespace monitoring --create-namespace
+    -f environments/minikube/values-minikube.yaml \
+    --namespace monitoring --create-namespace
 
-  echo "📦 Installing Loki stack with Grafana (Minikube)..."
+  echo "🗑️  Deleting Grafana secret to reset password..."
+  kubectl delete secret -n monitoring loki-grafana --ignore-not-found
+
+  echo "📦 Installing Loki stack with Grafana..."
   helm upgrade --install loki grafana/loki-stack \
-    -f environments/minikube/values-minikube.yaml --namespace monitoring
-
-  GRAFANA_SVC="loki-grafana"
+    -f environments/minikube/values-minikube.yaml \
+    --namespace monitoring --create-namespace
 
 elif [[ "$ENV" == "aks" ]]; then
   if [[ -z "$RESOURCE_GROUP" ]]; then
-    echo "❌ Missing required --resource-group argument for AKS deployment."
-    usage
+    echo "❌ --resource-group required for AKS."
+    exit 1
   fi
 
-  echo "🔧 Setting up AKS environment..."
+  echo "🔧 Getting AKS credentials..."
   az aks get-credentials --resource-group "$RESOURCE_GROUP" --name observability-aks-cluster
 
-  echo "📦 Installing Prometheus stack (AKS)..."
+  echo "📦 Installing Prometheus stack..."
   helm upgrade --install kube-prometheus prometheus-community/kube-prometheus-stack \
-    -f environments/aks/values-aks.yaml --namespace monitoring --create-namespace
+    -f environments/aks/values-aks.yaml \
+    --namespace monitoring --create-namespace
 
-  echo "📦 Installing Loki stack with Grafana (AKS)..."
+  echo "🗑️  Deleting Grafana secret to reset password..."
+  kubectl delete secret -n monitoring loki-grafana --ignore-not-found
+
+  echo "📦 Installing Loki stack with Grafana..."
   helm upgrade --install loki grafana/loki-stack \
-    -f environments/aks/values-aks.yaml --namespace monitoring
-
-  GRAFANA_SVC="loki-grafana"
+    -f environments/aks/values-aks.yaml \
+    --namespace monitoring --create-namespace
 
 else
   echo "❌ Unknown environment: $ENV"
-  usage
+  exit 1
 fi
 
-echo "✅ Deployment complete!"
-echo "🧭 Access Grafana UI with: kubectl port-forward svc/$GRAFANA_SVC -n monitoring 3000:80"
-echo "🔁 Starting port-forward on http://localhost:3000 ..."
-kubectl -n monitoring port-forward svc/$GRAFANA_SVC 3000:80 &
+echo "📊 Applying dashboard ConfigMap..."
+kubectl get ns monitoring >/dev/null 2>&1 || kubectl create ns monitoring
+
+if [[ -f manifests/grafana/sample-node-dashboard-configmap.yaml ]]; then
+  kubectl apply -f manifests/grafana/sample-node-dashboard-configmap.yaml
+else
+  echo "⚠️ Dashboard file not found."
+fi
+
+echo "🔄 Restarting Grafana..."
+GRAFANA_DEPLOY=$(kubectl get deploy -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath="{.items[0].metadata.name}" 2>/dev/null || true)
+if [[ -n "$GRAFANA_DEPLOY" ]]; then
+  kubectl rollout restart deployment/$GRAFANA_DEPLOY -n monitoring
+else
+  echo "⚠️ Grafana deployment not found."
+fi
+
+echo "🔁 Attempting port-forward to Grafana..."
+GRAFANA_SVC=$(kubectl get svc -n monitoring -l app.kubernetes.io/name=grafana -o jsonpath="{.items[0].metadata.name}" 2>/dev/null || true)
+
+if [[ -n "$GRAFANA_SVC" ]]; then
+  kubectl -n monitoring port-forward svc/$GRAFANA_SVC 3000:80 > /tmp/grafana-port-forward.log 2>&1 &
+  PORT_PID=$!
+  sleep 2
+  if grep -q "Forwarding from" /tmp/grafana-port-forward.log; then
+    echo "✅ Grafana is accessible at http://localhost:3000"
+  else
+    echo "⚠️ Port-forward failed. Check /tmp/grafana-port-forward.log"
+    kill $PORT_PID 2>/dev/null || true
+  fi
+else
+  echo "⚠️ Grafana service not found."
+fi
