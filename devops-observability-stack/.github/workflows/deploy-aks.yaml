@@ -1,0 +1,27 @@
+name: Deploy to AKS
+
+on:
+  push:
+    branches: [feature, bugfix, PR*]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🔐 Setup Azure CLI auth
+        run: |
+          echo "${{ secrets.AZURE_CREDENTIALS }}" > azurecreds.json
+          az login --service-principal \
+            -u $(jq -r .clientId azurecreds.json) \
+            -p $(jq -r .clientSecret azurecreds.json) \
+            --tenant $(jq -r .tenantId azurecreds.json)
+          az account set --subscription $(jq -r .subscriptionId azurecreds.json)
+
+      - name: 🚀 Deploy to AKS
+        run: |
+          chmod +x scripts/deploy.sh
+          ./scripts/deploy.sh --env aks --resource-group ${{ secrets.RESOURCE_GROUP }}
