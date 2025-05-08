@@ -4,35 +4,33 @@ trigger:
       - main
 
 variables:
-  dockerRegistryServiceConnection: 'YourDockerRegistryServiceConnection'
-  imageRepository: 'fastapi-devops-app'
-  containerRegistry: 'youracr.azurecr.io'
-  dockerfilePath: 'Dockerfile'
-  tag: '$(Build.BuildId)'
+  - group: devops-app-settings  # 👈 Linked Variable Group w/ secrets + env values
 
 stages:
+
 - stage: Build
   displayName: '🔧 Build and Push Docker Image'
   jobs:
-    - job: Build
+    - job: BuildAndPush
+      displayName: '📦 Build Docker Image and Push to ACR'
       pool:
         vmImage: 'ubuntu-latest'
       steps:
         - task: Docker@2
-          displayName: '📦 Build and Push Docker image'
           inputs:
             containerRegistry: $(dockerRegistryServiceConnection)
             repository: $(imageRepository)
-            command: 'buildAndPush'
+            command: buildAndPush
             Dockerfile: $(dockerfilePath)
             tags: |
-              $(tag)
+              $(Build.BuildId)
 
 - stage: Dev
-  displayName: '🚀 Deploy to Dev'
+  displayName: '🚀 Deploy to Dev Environment'
   dependsOn: Build
   jobs:
     - deployment: DevDeploy
+      displayName: '🌍 Deploy to Azure Web App - Dev'
       environment: 'dev'
       strategy:
         runOnce:
@@ -41,18 +39,19 @@ stages:
               - script: |
                   echo "Deploying to Dev..."
                   az webapp config container set \
-                    --name devops-demo-app-dev \
-                    --resource-group NickClarkRG \
-                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(tag) \
+                    --name $(devAppName) \
+                    --resource-group $(resourceGroup) \
+                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
                     --docker-registry-server-url https://$(containerRegistry)
-                displayName: '🌍 Deploy to Azure Web App - Dev'
+                displayName: 'Deploy Dev Container'
 
 - stage: Staging
-  displayName: '🧪 Deploy to Staging'
+  displayName: '🧪 Deploy to Staging (Requires Approval)'
   dependsOn: Dev
   condition: succeeded()
   jobs:
     - deployment: StagingDeploy
+      displayName: '🛰️ Deploy to Azure Web App - Staging'
       environment: 'staging'
       strategy:
         runOnce:
@@ -61,18 +60,19 @@ stages:
               - script: |
                   echo "Deploying to Staging..."
                   az webapp config container set \
-                    --name devops-demo-app-staging \
-                    --resource-group NickClarkRG \
-                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(tag) \
+                    --name $(stagingAppName) \
+                    --resource-group $(resourceGroup) \
+                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
                     --docker-registry-server-url https://$(containerRegistry)
-                displayName: '🛰️ Deploy to Azure Web App - Staging'
+                displayName: 'Deploy Staging Container'
 
 - stage: Production
-  displayName: '🏁 Deploy to Production'
+  displayName: '🏁 Deploy to Production (Requires Approval)'
   dependsOn: Staging
   condition: succeeded()
   jobs:
     - deployment: ProdDeploy
+      displayName: '🚢 Deploy to Azure Web App - Prod'
       environment: 'production'
       strategy:
         runOnce:
@@ -81,8 +81,8 @@ stages:
               - script: |
                   echo "Deploying to Production..."
                   az webapp config container set \
-                    --name devops-demo-app-prod \
-                    --resource-group NickClarkRG \
-                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(tag) \
+                    --name $(prodAppName) \
+                    --resource-group $(resourceGroup) \
+                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
                     --docker-registry-server-url https://$(containerRegistry)
-                displayName: '🚢 Deploy to Azure Web App - Prod'
+                displayName: 'Deploy Prod Container'
