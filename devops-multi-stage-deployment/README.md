@@ -81,14 +81,6 @@ Then visit http://localhost:8080
 
 ---
 
-## ✨ Coming Next
-* Web app scaffold with HTML/CSS
-* Multi-stage pipeline.yml with Key Vault + approvals
-* Full GitHub-ready CI/CD showcase
-* LinkedIn post to showcase deployment strategy
-
----
-
 ## 💡 Author
 
 Nick Clark
