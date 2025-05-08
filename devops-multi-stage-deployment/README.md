@@ -28,6 +28,9 @@ It features **artifact promotion**, **manual approvals**, and **Key Vault secret
 
 ```plaintext
 devops-multi-stage-deployment/
+├── requirements.txt                    # requirements.txt for python build
+├── .env.template                       # env template file for Azure
+├── .gitignore                          # ignore file for git
 ├── .azure-pipelines/                   # Azure DevOps pipeline config
 │   └── pipeline.yml                    # Multi-stage YAML pipeline
 │
