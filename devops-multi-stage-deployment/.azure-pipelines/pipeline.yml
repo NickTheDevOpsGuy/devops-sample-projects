@@ -8,7 +8,7 @@ variables:
 
 stages:
 
-# 🔧 BUILD + TEST + COVERAGE
+# 🔧 BUILD + TEST + COVERAGE + ARTIFACTS
 - stage: Build
   displayName: '🔧 Build, Test, and Push Docker Image'
   jobs:
@@ -45,6 +45,12 @@ stages:
             reportDirectory: ''
           displayName: '📈 Publish Coverage Report'
 
+        - task: PublishBuildArtifacts@1
+          inputs:
+            pathToPublish: 'coverage.xml'
+            artifactName: 'coverage-report'
+          displayName: '📤 Upload Coverage XML Artifact'
+
         - task: Docker@2
           displayName: '📦 Build and Push Docker image'
           inputs:
@@ -55,7 +61,7 @@ stages:
             tags: |
               $(Build.BuildId)
 
-# 🚀 DEV STAGE
+# 🚀 DEV DEPLOYMENT
 - stage: Dev
   displayName: '🚀 Deploy to Dev Environment'
   dependsOn: Build
@@ -68,7 +74,6 @@ stages:
           deploy:
             steps:
               - script: |
-                  echo "Deploying to Dev..."
                   az webapp config container set \
                     --name $(devAppName) \
                     --resource-group $(resourceGroup) \
@@ -81,7 +86,7 @@ stages:
                   curl -sSf https://$(devAppName).azurewebsites.net/ || exit 1
                 displayName: '✅ Smoke Test: Dev'
 
-# 🧪 STAGING STAGE
+# 🧪 STAGING DEPLOYMENT
 - stage: Staging
   displayName: '🧪 Deploy to Staging (Requires Approval)'
   dependsOn: Dev
@@ -95,7 +100,6 @@ stages:
           deploy:
             steps:
               - script: |
-                  echo "Deploying to Staging..."
                   az webapp config container set \
                     --name $(stagingAppName) \
                     --resource-group $(resourceGroup) \
@@ -108,7 +112,7 @@ stages:
                   curl -sSf https://$(stagingAppName).azurewebsites.net/ || exit 1
                 displayName: '✅ Smoke Test: Staging'
 
-# 🏁 PROD STAGE
+# 🏁 PROD DEPLOYMENT
 - stage: Production
   displayName: '🏁 Deploy to Production (Requires Approval)'
   dependsOn: Staging
@@ -122,7 +126,6 @@ stages:
           deploy:
             steps:
               - script: |
-                  echo "Deploying to Production..."
                   az webapp config container set \
                     --name $(prodAppName) \
                     --resource-group $(resourceGroup) \
