@@ -8,9 +8,31 @@ variables:
 
 stages:
 
+# ✅ BICEP VALIDATION STAGE
+- stage: Validate
+  displayName: '✅ Validate Bicep Templates'
+  jobs:
+    - job: BicepValidation
+      displayName: '🔍 Run Bicep Build Check'
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - checkout: self
+
+        - task: AzureCLI@2
+          displayName: 'Run az bicep build'
+          inputs:
+            azureSubscription: $(azureServiceConnection)
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              az bicep upgrade
+              az bicep build --file bicep/main.bicep
+
 # 🔧 BUILD + TEST + COVERAGE + ARTIFACTS
 - stage: Build
   displayName: '🔧 Build, Test, and Push Docker Image'
+  dependsOn: Validate
   jobs:
     - job: BuildAndTest
       displayName: '🧪 Run Tests and Build Docker Image'
