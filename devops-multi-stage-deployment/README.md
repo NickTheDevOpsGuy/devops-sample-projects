@@ -102,3 +102,10 @@ az deployment group create \
 📁 [GitHub](https://github.com/NickTheDevOpsGuy)
 
 #DevOps #AzureDevOps #AZ400 #CI_CD #IaC #FastAPI #NickDoesDevOps
+
+---
+
+## ✨ How to Contribute
+* Fork the repo
+* Make changes on a feature branch
+* Submit a pull request
