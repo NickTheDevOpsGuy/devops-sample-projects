@@ -44,34 +44,40 @@ stages:
             versionSpec: '3.11'
           displayName: '📦 Use Python 3.11'
 
-        - script: |
-            python -m pip install --upgrade pip
-            pip install -r requirements.txt
+        - task: Bash@3
           displayName: '📥 Install Python Dependencies'
+          inputs:
+            targetType: inline
+            script: |
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
 
-        - script: |
-            pytest --junitxml=pytest-results.xml --cov=src --cov-report=xml --cov-fail-under=80
+        - task: Bash@3
           displayName: '📊 Run Pytest with Coverage (min 80%)'
+          inputs:
+            targetType: inline
+            script: |
+              pytest --junitxml=pytest-results.xml --cov=src --cov-report=xml --cov-fail-under=80
 
         - task: PublishTestResults@2
+          displayName: '📝 Publish Pytest Results'
           inputs:
             testResultsFiles: '**/pytest-results.xml'
             testResultsFormat: 'JUnit'
             failTaskOnFailedTests: true
-          displayName: '📝 Publish Pytest Results'
 
         - task: PublishCodeCoverageResults@1
+          displayName: '📈 Publish Coverage Report'
           inputs:
             codeCoverageTool: Cobertura
             summaryFileLocation: 'coverage.xml'
             reportDirectory: ''
-          displayName: '📈 Publish Coverage Report'
 
         - task: PublishBuildArtifacts@1
+          displayName: '📤 Upload Coverage XML Artifact'
           inputs:
             pathToPublish: 'coverage.xml'
             artifactName: 'coverage-report'
-          displayName: '📤 Upload Coverage XML Artifact'
 
         - task: Docker@2
           displayName: '📦 Build and Push Docker image'
@@ -101,7 +107,7 @@ stages:
                     --resource-group $(resourceGroup) \
                     --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
                     --docker-registry-server-url https://$(containerRegistry)
-                displayName: 'Deploy Dev Container'
+                displayName: '🚚 Deploy Dev Container'
 
               - script: |
                   echo "🔍 Smoke testing Dev deployment..."
@@ -127,7 +133,7 @@ stages:
                     --resource-group $(resourceGroup) \
                     --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
                     --docker-registry-server-url https://$(containerRegistry)
-                displayName: 'Deploy Staging Container'
+                displayName: '🚚 Deploy Staging Container'
 
               - script: |
                   echo "🔍 Smoke testing Staging deployment..."
@@ -153,7 +159,7 @@ stages:
                     --resource-group $(resourceGroup) \
                     --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
                     --docker-registry-server-url https://$(containerRegistry)
-                displayName: 'Deploy Prod Container'
+                displayName: '🚚 Deploy Prod Container'
 
               - script: |
                   echo "🔍 Smoke testing Production deployment..."

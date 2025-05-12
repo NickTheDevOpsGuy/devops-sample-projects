@@ -30,7 +30,7 @@ It features:
 ```
 devops-multi-stage-deployment/
 ├── .azure-pipelines/
-│   └── pipeline.yml                  # Azure DevOps pipeline
+│   └── ci-cd.yml                     # Azure DevOps pipeline
 ├── bicep/
 │   ├── main.bicep                    # Infra entry point
 │   ├── modules/
