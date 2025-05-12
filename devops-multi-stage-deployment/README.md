@@ -2,16 +2,20 @@
 
 This project demonstrates a **real-world Azure DevOps multi-stage pipeline** for deploying a containerized FastAPI web app to **three environments**: Dev, Staging, and Production.
 
-It features:
+## 💡 Key Accomplishments
 
-✅ Multi-stage Azure DevOps pipeline  
-✅ Manual approvals for Staging and Prod  
-✅ Pytest + coverage enforcement  
-✅ Smoke tests after each deployment  
-✅ Bicep-based infrastructure with modular structure  
-✅ Environment-specific config (logging, flags, secrets)  
-✅ Optional Terraform mirror and automation scripts  
-✅ Architecture diagram and full documentation
+- 🔧 Built multi-stage pipeline with:
+  - ✅ Bicep template validation
+  - 🧪 Pytest test execution and coverage enforcement
+  - 📈 Test & coverage report publishing
+  - 📦 Docker image build and push to ACR
+  - 🌐 Deployments to Azure Web Apps (Dev, Staging, Prod)
+
+- 🔐 Secrets managed securely using Azure Key Vault
+- 🧼 Pipeline is emoji-powered for clarity and swagger 😎
+- 🔍 Smoke tests executed post-deployment for live validation
+
+## 📁 Repository: [`devops-multi-stage-deployment`](https://github.com/NickTheDevOpsGuy/devops-sample-projects/tree/feature/devops-multi-stage-deployments/devops-multi-stage-deployment)
 
 ---
 
@@ -102,6 +106,16 @@ az deployment group create \
 📁 [GitHub](https://github.com/NickTheDevOpsGuy)
 
 #DevOps #AzureDevOps #AZ400 #CI_CD #IaC #FastAPI #NickDoesDevOps
+
+---
+
+## ✅ Project Status: Complete
+
+This project represents a production-ready Azure DevOps deployment pipeline with full testing, observability hooks, and secure practices baked in.
+
+If you're looking for a real-world DevOps example to learn from, fork it and start hacking.
+
+> Built with 💙 by [NickDoesDevOps](https://www.linkedin.com/in/nicholas-a-clark/) — world domination never looked so clean.
 
 ---
 
