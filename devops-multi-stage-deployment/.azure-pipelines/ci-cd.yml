@@ -1,0 +1,167 @@
+trigger:
+  branches:
+    include:
+      - main
+
+variables:
+  - group: devops-app-settings
+
+stages:
+
+# ✅ BICEP VALIDATION STAGE
+- stage: Validate
+  displayName: '✅ Validate Bicep Templates'
+  jobs:
+    - job: BicepValidation
+      displayName: '🔍 Run Bicep Build Check'
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - checkout: self
+
+        - task: AzureCLI@2
+          displayName: 'Run az bicep build'
+          inputs:
+            azureSubscription: $(azureServiceConnection)
+            scriptType: bash
+            scriptLocation: inlineScript
+            inlineScript: |
+              az bicep upgrade
+              az bicep build --file bicep/main.bicep
+
+# 🔧 BUILD + TEST + COVERAGE + ARTIFACTS
+- stage: Build
+  displayName: '🔧 Build, Test, and Push Docker Image'
+  dependsOn: Validate
+  jobs:
+    - job: BuildAndTest
+      displayName: '🧪 Run Tests and Build Docker Image'
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '3.11'
+          displayName: '📦 Use Python 3.11'
+
+        - task: Bash@3
+          displayName: '📥 Install Python Dependencies'
+          inputs:
+            targetType: inline
+            script: |
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
+
+        - task: Bash@3
+          displayName: '📊 Run Pytest with Coverage (min 80%)'
+          inputs:
+            targetType: inline
+            script: |
+              pytest --junitxml=pytest-results.xml --cov=src --cov-report=xml --cov-fail-under=80
+
+        - task: PublishTestResults@2
+          displayName: '📝 Publish Pytest Results'
+          inputs:
+            testResultsFiles: '**/pytest-results.xml'
+            testResultsFormat: 'JUnit'
+            failTaskOnFailedTests: true
+
+        - task: PublishCodeCoverageResults@1
+          displayName: '📈 Publish Coverage Report'
+          inputs:
+            codeCoverageTool: Cobertura
+            summaryFileLocation: 'coverage.xml'
+            reportDirectory: ''
+
+        - task: PublishBuildArtifacts@1
+          displayName: '📤 Upload Coverage XML Artifact'
+          inputs:
+            pathToPublish: 'coverage.xml'
+            artifactName: 'coverage-report'
+
+        - task: Docker@2
+          displayName: '📦 Build and Push Docker image'
+          inputs:
+            containerRegistry: $(dockerRegistryServiceConnection)
+            repository: $(imageRepository)
+            command: buildAndPush
+            Dockerfile: $(dockerfilePath)
+            tags: |
+              $(Build.BuildId)
+
+# 🚀 DEV DEPLOYMENT
+- stage: Dev
+  displayName: '🚀 Deploy to Dev Environment'
+  dependsOn: Build
+  jobs:
+    - deployment: DevDeploy
+      displayName: '🌍 Deploy to Azure Web App - Dev'
+      environment: 'dev'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - script: |
+                  az webapp config container set \
+                    --name $(devAppName) \
+                    --resource-group $(resourceGroup) \
+                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
+                    --docker-registry-server-url https://$(containerRegistry)
+                displayName: '🚚 Deploy Dev Container'
+
+              - script: |
+                  echo "🔍 Smoke testing Dev deployment..."
+                  curl -sSf https://$(devAppName).azurewebsites.net/ || exit 1
+                displayName: '✅ Smoke Test: Dev'
+
+# 🧪 STAGING DEPLOYMENT
+- stage: Staging
+  displayName: '🧪 Deploy to Staging (Requires Approval)'
+  dependsOn: Dev
+  condition: succeeded()
+  jobs:
+    - deployment: StagingDeploy
+      displayName: '🛰️ Deploy to Azure Web App - Staging'
+      environment: 'staging'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - script: |
+                  az webapp config container set \
+                    --name $(stagingAppName) \
+                    --resource-group $(resourceGroup) \
+                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
+                    --docker-registry-server-url https://$(containerRegistry)
+                displayName: '🚚 Deploy Staging Container'
+
+              - script: |
+                  echo "🔍 Smoke testing Staging deployment..."
+                  curl -sSf https://$(stagingAppName).azurewebsites.net/ || exit 1
+                displayName: '✅ Smoke Test: Staging'
+
+# 🏁 PROD DEPLOYMENT
+- stage: Production
+  displayName: '🏁 Deploy to Production (Requires Approval)'
+  dependsOn: Staging
+  condition: succeeded()
+  jobs:
+    - deployment: ProdDeploy
+      displayName: '🚢 Deploy to Azure Web App - Prod'
+      environment: 'production'
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+              - script: |
+                  az webapp config container set \
+                    --name $(prodAppName) \
+                    --resource-group $(resourceGroup) \
+                    --docker-custom-image-name $(containerRegistry)/$(imageRepository):$(Build.BuildId) \
+                    --docker-registry-server-url https://$(containerRegistry)
+                displayName: '🚚 Deploy Prod Container'
+
+              - script: |
+                  echo "🔍 Smoke testing Production deployment..."
+                  curl -sSf https://$(prodAppName).azurewebsites.net/ || exit 1
+                displayName: '✅ Smoke Test: Production'
