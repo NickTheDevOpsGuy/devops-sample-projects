@@ -7,6 +7,8 @@ param location string
 @description('Subnet resource ID for AKS node pool')
 param subnetId string
 
+targetScope = 'resourceGroup'
+
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-05-01' = {
   name: aksName
   location: location

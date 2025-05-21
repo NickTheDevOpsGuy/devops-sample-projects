@@ -64,11 +64,13 @@ fi
 echo ""
 echo "🛠️  [1/3] Deploying infrastructure with Bicep..."
 start_time=$(date +%s)
+
 az deployment group create \
   --name "$DEPLOYMENT_NAME" \
   --resource-group "$RG" \
   --template-file "$BICEP_FILE" \
-  --parameters "@$PARAM_FILE"
+  --parameters "@$PARAM_FILE" \
+  --parameters location="$LOCATION"
 
 # 📊 Monitor deployment operations
 echo ""

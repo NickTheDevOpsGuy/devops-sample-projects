@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-param location string = 'eastus'
+param location string
 param planName string = 'DefenderForContainers'
 
 module defender 'modules/defender.bicep' = {

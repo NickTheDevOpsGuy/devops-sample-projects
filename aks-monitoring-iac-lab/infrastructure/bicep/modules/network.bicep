@@ -1,6 +1,8 @@
 param location string
 param environment string
 
+targetScope = 'resourceGroup'
+
 resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
   name: 'vnet-${environment}'
   location: location
