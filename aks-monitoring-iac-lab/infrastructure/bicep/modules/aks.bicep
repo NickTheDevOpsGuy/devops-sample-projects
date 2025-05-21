@@ -10,6 +10,11 @@ param subnetId string
 resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-05-01' = {
   name: aksName
   location: location
+  sku: {
+    name: 'Base'
+    tier: 'Free'
+  }
+
   identity: {
     type: 'SystemAssigned'
   }
@@ -24,7 +29,7 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-05-01' = {
         osType: 'Linux'
         mode: 'System'
         type: 'VirtualMachineScaleSets'
-        vnetSubnetId: subnetId
+        vnetSubnetID: subnetId
       }
     ]
     networkProfile: {
@@ -32,13 +37,9 @@ resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-05-01' = {
       loadBalancerSku: 'standard'
       serviceCidr: '10.240.0.0/16'
       dnsServiceIP: '10.240.0.10'
-      dockerBridgeCidr: '172.17.0.1/16'
     }
     enableRBAC: true
-    sku: {
-      name: 'Basic'
-      tier: 'Free'
-    }
+
   }
 }
 
