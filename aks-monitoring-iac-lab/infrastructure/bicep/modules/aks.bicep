@@ -2,7 +2,7 @@
 param aksName string
 
 @description('Location for the AKS cluster')
-param location string
+param location string = resourceGroup().location
 
 @description('Subnet resource ID for AKS node pool')
 param subnetId string
