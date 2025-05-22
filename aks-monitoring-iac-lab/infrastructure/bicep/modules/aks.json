@@ -1,0 +1,78 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "12244215066035047484"
+    }
+  },
+  "parameters": {
+    "aksName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the AKS cluster"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Location for the AKS cluster"
+      }
+    },
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet resource ID for AKS node pool"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('aksName')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "sku": {
+        "name": "Basic",
+        "tier": "Free"
+      },
+      "properties": {
+        "dnsPrefix": "[format('{0}-dns', parameters('aksName'))]",
+        "kubernetesVersion": "",
+        "agentPoolProfiles": [
+          {
+            "name": "nodepool1",
+            "count": 1,
+            "vmSize": "Standard_B2ms",
+            "osType": "Linux",
+            "mode": "System",
+            "type": "VirtualMachineScaleSets",
+            "vnetSubnetID": "[parameters('subnetId')]"
+          }
+        ],
+        "networkProfile": {
+          "networkPlugin": "azure",
+          "loadBalancerSku": "standard",
+          "serviceCidr": "10.240.0.0/16",
+          "dnsServiceIP": "10.240.0.10"
+        },
+        "enableRBAC": true
+      }
+    }
+  ],
+  "outputs": {
+    "clusterName": {
+      "type": "string",
+      "value": "[parameters('aksName')]"
+    },
+    "clusterResourceId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('aksName'))]"
+    }
+  }
+}

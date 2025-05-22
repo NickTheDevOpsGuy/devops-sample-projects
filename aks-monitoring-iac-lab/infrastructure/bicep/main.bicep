@@ -35,6 +35,7 @@ module aks 'modules/aks.bicep' = {
     aksName: 'aks-${environment}'
     subnetId: network.outputs.subnetId
     location: location
+    workspaceResourceId: loganalytics.outputs.workspaceResourceId
   }
 }
 
