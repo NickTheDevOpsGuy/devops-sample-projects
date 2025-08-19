@@ -47,9 +47,12 @@ Each folder has its own README.md with setup instructions.
 Use them to test out ideas, fork them for your own infra, or just explore how I build things.
 
 ## ✍️ Author
-- Nick Clark
-- [GitHub](https://github.com/NickTheDevOpsGuy)
-- [LinkedIN](https://linkedin.com/in/nicholas-a-clark)
+**Nick Clark**  
+
+- 🌐 [GitHub](https://github.com/NickTheDevOpsGuy)  
+- 💼 [LinkedIn](https://www.linkedin.com/in/nicholas-a-clark/)  
+
+🧠 **#NickDoesDevOps** &nbsp; 🚀 **#LearningInPublic** &nbsp; 🔧 **#WorldDomination**
 
 🧠 #NickDoesDevOps
 🚀 #LearningInPublic
