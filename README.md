@@ -48,9 +48,8 @@ Use them to test out ideas, fork them for your own infra, or just explore how I 
 
 ## ✍️ Author
 - Nick Clark
-- Cloud | DevOps | IaC | Kubernetes
-- (github/NickTheDevOPSGuy)[https://github.com/NickTheDevOpsGuy]
-- (LinkedIN | nicholas-a-clark)[https://linkedin.com/in/nicholas-a-clark]
+- [github/NickTheDevOPSGuy](https://github.com/NickTheDevOpsGuy)
+- [LinkedIN](https://linkedin.com/in/nicholas-a-clark)
 
 🧠 #NickDoesDevOps
 🚀 #LearningInPublic
