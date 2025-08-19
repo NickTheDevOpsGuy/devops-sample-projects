@@ -54,10 +54,6 @@ Use them to test out ideas, fork them for your own infra, or just explore how I 
 
 🧠 **#NickDoesDevOps** &nbsp; 🚀 **#LearningInPublic** &nbsp; 🔧 **#WorldDomination**
 
-🧠 #NickDoesDevOps
-🚀 #LearningInPublic
-🔧 #WorldDomination
-
 ## 📬 Want More?
 Check out:
 
