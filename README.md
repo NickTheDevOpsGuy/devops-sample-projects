@@ -48,7 +48,7 @@ Use them to test out ideas, fork them for your own infra, or just explore how I 
 
 ## ✍️ Author
 - Nick Clark
-- [github/NickTheDevOPSGuy](https://github.com/NickTheDevOpsGuy)
+- [GitHub](https://github.com/NickTheDevOpsGuy)
 - [LinkedIN](https://linkedin.com/in/nicholas-a-clark)
 
 🧠 #NickDoesDevOps
