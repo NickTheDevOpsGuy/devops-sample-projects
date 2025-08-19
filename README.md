@@ -54,22 +54,4 @@ Use them to test out ideas, fork them for your own infra, or just explore how I 
 
 🧠 **#NickDoesDevOps** &nbsp; 🚀 **#LearningInPublic** &nbsp; 🔧 **#WorldDomination**
 
-## 📬 Want More?
-Check out:
-
-*My GitHub Actions CI/CD lab
-*My AKS + Monitoring Infrastructure Lab
-*My blog on LinkedIn
-
-```yaml
-
----
-
-Let me know if you want:
-- A badges row (CI ✅, Last Commit 🕒)
-- GIF previews of your tools in action
-- A “featured project” highlight banner
-
-This README now speaks for you when recruiters, engineers, or future bosses show up. Want me to push it to your `develop` branch for you?
-
 ```
