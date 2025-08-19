@@ -53,5 +53,3 @@ Use them to test out ideas, fork them for your own infra, or just explore how I 
 - 💼 [LinkedIn](https://www.linkedin.com/in/nicholas-a-clark/)  
 
 🧠 **#NickDoesDevOps** &nbsp; 🚀 **#LearningInPublic** &nbsp; 🔧 **#WorldDomination**
-
-```
