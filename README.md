@@ -1,6 +1,8 @@
 # 🧰 DevOps Sample Projects
 
-Welcome to my **DevOps project portfolio** — a growing collection of real-world infrastructure, automation, and observability labs built with Azure, Bicep, GitHub Actions, Kubernetes, and more.
+> Real-world DevOps scenarios built to demonstrate automation, scalability, and **AZ-400-aligned** skills.
+
+Welcome to my **DevOps project portfolio** — a growing collection of real-world infrastructure, automation, and observability labs built with **Azure**, **Bicep**, **GitHub Actions**, **Kubernetes**, and more.
 
 This repository showcases how I approach DevOps work hands-on: through repeatable, modular, and production-aware patterns. 💥
 
@@ -34,6 +36,16 @@ Each project is modular, testable, and includes scripts or templates you can use
 
 ---
 
+## 🧩 Skills Demonstrated
+
+- Infrastructure as Code (Bicep, Terraform)
+- CI/CD Automation (GitHub Actions, Azure DevOps)
+- Cloud Architecture (AKS, App Service, Key Vault)
+- Observability & Monitoring (Prometheus, Grafana, App Insights)
+- Scripting & Tooling (Bash, Python, TypeScript)
+
+---
+
 ## 🚀 How to Use These Projects
 
 Clone the repo:
@@ -45,6 +57,8 @@ cd devops-sample-projects
 
 Each folder has its own README.md with setup instructions.
 Use them to test out ideas, fork them for your own infra, or just explore how I build things.
+
+----
 
 ## ✍️ Author
 **Nick Clark**  
